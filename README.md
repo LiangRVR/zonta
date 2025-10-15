@@ -8,20 +8,21 @@ A modern, responsive multi-page website for the Zonta Club of Naples, built with
 zonta/
 ├── index.html              # Homepage
 ├── css/
-│   └── styles.css         # Main stylesheet
+│   └── styles.css          # Main stylesheet
 ├── js/
-│   └── main.js            # Main JavaScript file
+│   |-- main.js             # Main JavaScript file
+|   └── nav-footer-share.js # Manage the shared header and footer
 ├── pages/
-│   ├── about.html         # About page
-│   ├── service.html       # Service page
-│   ├── advocacy.html      # Advocacy page
-│   ├── scholarships.html  # Scholarships page
-│   ├── membership.html    # Membership page
-│   └── action.html        # Zonta in Action page
+│   ├── about.html          # About page
+│   ├── service.html        # Service page
+│   ├── advocacy.html       # Advocacy page
+│   ├── scholarships.html   # Scholarships page
+│   ├── membership.html     # Membership page
+│   └── action.html         # Zonta in Action page
 ├── includes/
-│   ├── header.html        # Reusable header component
-│   └── footer.html        # Reusable footer component
-└── images/                # Image assets
+│   ├── header.html         # Reusable header component
+│   └── footer.html         # Reusable footer component
+└── images/                 # Image assets
     ├── zonta-logo.png
     ├── zonta-100-years.png
     ├── historic-group.jpg
