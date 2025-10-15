@@ -301,7 +301,10 @@ nav {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 6rem 2rem;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .section-title {
@@ -317,8 +320,9 @@ nav {
     content: '';
     position: absolute;
     bottom: -10px;
-    left: 0;
-    width: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
     height: 4px;
     background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
     border-radius: 2px;
@@ -326,7 +330,7 @@ nav {
 
 .section-subtitle {
     color: var(--gray);
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     font-size: 1.2rem;
 }
 
@@ -753,7 +757,7 @@ nav {
 .sponsors-carousel {
     width: 100%;
     overflow: hidden;
-    margin-top: 3rem;
+    margin-top: 1rem;
     padding: 2rem 0;
     position: relative;
 }
@@ -1114,7 +1118,7 @@ footer {
     }
 
     .container {
-        padding: 4rem 1.5rem;
+        padding: 2rem 1.5rem;
     }
 
     .icon-cards,
