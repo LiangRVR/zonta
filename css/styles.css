@@ -743,6 +743,96 @@ nav {
     font-weight: 500;
 }
 
+/* Sponsors Section - Infinite Carousel */
+.sponsors-section {
+    background: var(--light-gray);
+    padding: 6rem 2rem;
+    overflow: hidden;
+}
+
+.sponsors-carousel {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 3rem;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.sponsors-carousel::before,
+.sponsors-carousel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.sponsors-carousel::before {
+    left: 0;
+    background: linear-gradient(to right, var(--light-gray), transparent);
+}
+
+.sponsors-carousel::after {
+    right: 0;
+    background: linear-gradient(to left, var(--light-gray), transparent);
+}
+
+.sponsors-track {
+    display: flex;
+    gap: 3rem;
+    animation: scroll 30s linear infinite;
+    width: fit-content;
+}
+
+.sponsors-track:hover {
+    animation-play-state: paused;
+}
+
+.sponsor-item {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 220px;
+    min-height: 180px;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    flex-shrink: 0;
+}
+
+.sponsor-item:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(139, 58, 60, 0.15);
+    border-color: var(--secondary-color);
+}
+
+.sponsor-logo {
+    max-width: 100%;
+    max-height: 140px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.sponsor-item:hover .sponsor-logo {
+    transform: scale(1.1);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
 /* Footer - Modern Design */
 footer {
     background: var(--dark);
@@ -1034,6 +1124,11 @@ footer {
         grid-template-columns: 1fr;
     }
 
+    .sponsors-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
     .footer-content {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -1053,5 +1148,17 @@ footer {
 
     .footer-tagline {
         text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .sponsors-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .sponsor-item {
+        padding: 1.5rem;
+        min-height: 150px;
     }
 }
