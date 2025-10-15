@@ -117,6 +117,10 @@ nav {
     color: var(--secondary-color);
 }
 
+.nav-links a.active {
+    color: var(--secondary-color);
+}
+
 .mobile-menu {
     display: none;
     background: none;
@@ -144,7 +148,7 @@ nav {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
         radial-gradient(circle at 20% 50%, rgba(230, 161, 23, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(0, 188, 212, 0.1) 0%, transparent 50%);
     pointer-events: none;
@@ -686,7 +690,7 @@ nav {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
         radial-gradient(circle at 30% 50%, rgba(230, 161, 23, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 70% 50%, rgba(0, 188, 212, 0.15) 0%, transparent 50%);
 }
