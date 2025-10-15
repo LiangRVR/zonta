@@ -129,27 +129,6 @@ Copy these into new pages to maintain consistency.
 - Intersection Observer for scroll animations
 - No external dependencies (pure vanilla JS)
 
-## Future Enhancements
-
-- [ ] Add contact form with backend integration
-- [ ] Implement CMS for easy content updates
-- [ ] Add blog section for news and updates
-- [ ] Include photo gallery
-- [ ] Add donation integration
-- [ ] Implement search functionality
-- [ ] Add multilingual support
-
-## License
-
-Copyright © 2025 Zonta Club of Naples. All rights reserved.
-
-## Contact
-
-For questions or support:
-- Email: info@zonta-naples.org
-- Location: Naples, Florida, Collier County
-- Meeting Location: The Hampton Social, 9114 Strada Pl, Naples, FL 34108
-
 ---
 
 **Note**: This is a static website. For dynamic content management, consider integrating a CMS like WordPress, or use server-side includes (SSI) to automatically include header/footer components.
