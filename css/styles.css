@@ -650,7 +650,7 @@ nav {
     line-height: 1.6;
 }
 
-/* Meeting Section - Featured Image */
+/* f Section - Featured Image */
 .meeting-section {
     padding: 6rem 2rem;
     background: var(--light-gray);
@@ -906,10 +906,14 @@ footer {
 }
 
 <<<<<<< HEAD
+
 input[type=text] {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
+  display: inline-block;
+  border: 1px solid #ccc
+  border-radius: 4px
   box-sizing: border-box;
   align-items: center;
 }
