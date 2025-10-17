@@ -912,15 +912,21 @@ input[type=text] {
   padding: 12px;
   margin: 10px 0;
   display: inline-block;
-  border: 1px solid #ccc
-  border-radius: 4px
   box-sizing: border-box;
+  border: 2px green;
   align-items: center;
+  color: red;
 }
 
-input[type=button], input[type=submit], input[type=reset] {
+form {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+input[type=submit] {
   background-color: #8B3A3C;
-  border: none;
+  border: green;
   color: white;
   padding: 16px 32px;
   text-decoration: none;
@@ -928,6 +934,8 @@ input[type=button], input[type=submit], input[type=reset] {
   cursor: pointer;
   align-items: center;
 }
+
+label {display: block;}
 
 .footer-section ul {
 =======
