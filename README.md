@@ -8,21 +8,20 @@ A modern, responsive multi-page website for the Zonta Club of Naples, built with
 zonta/
 ├── index.html              # Homepage
 ├── css/
-│   └── styles.css          # Main stylesheet
+│   └── styles.css         # Main stylesheet
 ├── js/
-│   |-- main.js             # Main JavaScript file
-|   └── nav-footer-share.js # Manage the shared header and footer
+│   └── main.js            # Main JavaScript file
 ├── pages/
-│   ├── about.html          # About page
-│   ├── service.html        # Service page
-│   ├── advocacy.html       # Advocacy page
-│   ├── scholarships.html   # Scholarships page
-│   ├── membership.html     # Membership page
-│   └── action.html         # Zonta in Action page
+│   ├── about.html         # About page
+│   ├── service.html       # Service page
+│   ├── advocacy.html      # Advocacy page
+│   ├── scholarships.html  # Scholarships page
+│   ├── membership.html    # Membership page
+│   └── action.html        # Zonta in Action page
 ├── includes/
-│   ├── header.html         # Reusable header component
-│   └── footer.html         # Reusable footer component
-└── images/                 # Image assets
+│   ├── header.html        # Reusable header component
+│   └── footer.html        # Reusable footer component
+└── images/                # Image assets
     ├── zonta-logo.png
     ├── zonta-100-years.png
     ├── historic-group.jpg
@@ -129,6 +128,27 @@ Copy these into new pages to maintain consistency.
 - Efficient JavaScript with event delegation
 - Intersection Observer for scroll animations
 - No external dependencies (pure vanilla JS)
+
+## Future Enhancements
+
+- [ ] Add contact form with backend integration
+- [ ] Implement CMS for easy content updates
+- [ ] Add blog section for news and updates
+- [ ] Include photo gallery
+- [ ] Add donation integration
+- [ ] Implement search functionality
+- [ ] Add multilingual support
+
+## License
+
+Copyright © 2025 Zonta Club of Naples. All rights reserved.
+
+## Contact
+
+For questions or support:
+- Email: info@zonta-naples.org
+- Location: Naples, Florida, Collier County
+- Meeting Location: The Hampton Social, 9114 Strada Pl, Naples, FL 34108
 
 ---
 

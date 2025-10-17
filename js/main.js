@@ -1,8 +1,4 @@
 // Zonta Club of Naples - Main JavaScript
-import { includePartials } from './nav-footer-share.js';
-
-// Load header and footer partials
-await includePartials();
 
 // Mobile menu toggle
 const mobileMenu = document.getElementById('mobileMenu');
@@ -28,7 +24,7 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-
+    
     if (header) {
         if (currentScroll > 100) {
             header.classList.add('scrolled');
@@ -36,7 +32,7 @@ window.addEventListener('scroll', () => {
             header.classList.remove('scrolled');
         }
     }
-
+    
     lastScroll = currentScroll;
 });
 
