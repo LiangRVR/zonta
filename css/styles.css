@@ -499,9 +499,21 @@ nav {
 
 .about-form {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 500px;
+  margin: auto;
+}
+
+.about-form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
 }
 
 .about-form input {
@@ -519,7 +531,7 @@ nav {
   padding: 16px 32px;
   text-decoration: none;
   align-items: center;
-  margin: 4px 2px;
+  margin: auto;
   cursor: pointer;
 }
 
@@ -528,6 +540,12 @@ nav {
   width: 50%;
   padding: 10px;
   height: 300px;
+}
+
+.about-form-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .about-row:after {
