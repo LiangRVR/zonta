@@ -7,13 +7,72 @@
     <meta name="description" content="Shop Zonta Club of Naples merchandise and support our community service and programs.">
     <link rel="icon" type="image/png" href="../images/zontalogo_gold.png" />
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/shop.css">
 </head>
 <body>
     <div data-include="../includes/header.html"></div>
 
+    <!-- Cart Button -->
+    <button class="cart-button" id="cartButton">
+      🛒 Cart
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+
+    <!-- Hero Section -->
+    <section class="shop-hero">
+      <h1>Support Our Mission</h1>
+      <p>
+        Every purchase helps us empower women and girls in Collier County. Shop our exclusive merchandise and make a difference!
+      </p>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+      <div id="productsLoading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+      <div id="productsGrid" class="products-grid" style="display: none;">
+        <!-- Products will be loaded here dynamically -->
+      </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+      <div class="cart-content">
+        <div class="cart-header">
+          <h2>Shopping Cart</h2>
+          <button class="close-cart" id="closeCart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+          <div class="cart-empty">
+            <p>🛒 Your cart is empty</p>
+            <p style="font-size: 0.9rem;">Add some items to get started!</p>
+          </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+          <div class="cart-total">
+            <span class="cart-total-label">Total:</span>
+            <span class="cart-total-amount" id="cartTotal">$0.00</span>
+          </div>
+          <form class="checkout-form" id="checkoutForm">
+            <input
+              type="email"
+              id="customerEmail"
+              placeholder="Enter your email"
+              required
+            />
+          </form>
+          <button class="checkout-btn" id="checkoutBtn">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div data-include="../includes/footer.html"></div>
 
     <script type="module" src="../js/main.js"></script>
+    <script type="module" src="../js/shop.js"></script>
 </body>
 </html>
