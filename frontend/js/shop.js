@@ -222,37 +222,39 @@ checkoutBtn.addEventListener('click', async () => {
     return;
   }
 
+  if (cart.length === 0) {
+    alert('Your cart is empty');
+    return;
+  }
+
   checkoutBtn.disabled = true;
   checkoutBtn.textContent = 'Processing...';
 
   try {
-    // For development: simulate checkout
-    console.log('Checkout data:', { items: cart, customerEmail: email });
+    // Call backend to create Stripe checkout session
+    const response = await fetch(`${API_URL}/api/stripe/create-checkout-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: cart, customerEmail: email })
+    });
 
-    // In production, this would call your backend:
-    // const response = await fetch(`${API_URL}/create-checkout-session`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ items: cart, customerEmail: email })
-    // });
-    // const data = await response.json();
-    // window.location.href = data.url;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    // For now, show success message
-    alert('Demo Mode: In production, you would be redirected to Stripe checkout.\n\nOrder details:\n' +
-          cart.map(item => `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n') +
-          `\n\nTotal: $${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}`);
+    const data = await response.json();
 
-    // Clear cart
-    cart = [];
-    updateCart();
-    cartModal.classList.remove('active');
-    customerEmail.value = '';
+    // Redirect to Stripe checkout
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error('No checkout URL received');
+    }
 
   } catch (error) {
     console.error('Checkout error:', error);
-    alert('Sorry, there was an error processing your order. Please try again or contact support.');
-  } finally {
+    alert('Sorry, there was an error processing your order. Please make sure the backend server is running and try again.');
+
     checkoutBtn.disabled = false;
     checkoutBtn.textContent = 'Proceed to Checkout';
   }

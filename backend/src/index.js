@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 // Import routes
 const productsRoutes = require('./routes/products');
+const stripeRoutes = require('./routes/stripe');
 
 // Middleware
 app.use(cors());
@@ -23,7 +24,9 @@ app.get('/', (req, res) => {
       products: '/api/products',
       productById: '/api/products/:id',
       categories: '/api/products/categories',
-      productsByCategory: '/api/products/category/:category'
+      productsByCategory: '/api/products/category/:category',
+      createCheckout: 'POST /api/stripe/create-checkout-session',
+      getSession: '/api/stripe/session/:sessionId'
     }
   });
 });
@@ -35,6 +38,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/products', productsRoutes);
+app.use('/api/stripe', stripeRoutes);
 
 // 404 handler
 app.use((req, res) => {

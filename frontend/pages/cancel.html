@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cancelled - Zonta Club of Naples</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/shop.css">
+    <style>
+        .cancel-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .cancel-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            color: #f44336;
+        }
+
+        .cancel-container h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .cancel-container p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .info-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .info-box h2 {
+            color: #856404;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box ul {
+            text-align: left;
+            color: #856404;
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .info-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #8B4789;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6d3768;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main>
+        <div class="cancel-container">
+            <div class="cancel-icon">✕</div>
+            <h1>Order Cancelled</h1>
+            <p>Your order has been cancelled and no charges have been made.</p>
+
+            <div class="info-box">
+                <h2>What happened?</h2>
+                <p>You chose to cancel the checkout process. This could be because:</p>
+                <ul>
+                    <li>You changed your mind about the purchase</li>
+                    <li>You wanted to review your cart items</li>
+                    <li>You encountered an issue during checkout</li>
+                    <li>You decided to complete the purchase later</li>
+                </ul>
+            </div>
+
+            <p>Your cart items are still saved and waiting for you!</p>
+
+            <div class="action-buttons">
+                <a href="shop.html" class="btn btn-primary">Return to Shop</a>
+                <a href="../index.html" class="btn btn-secondary">Go to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script src="../js/nav-footer-share.js"></script>
+</body>
+</html>
