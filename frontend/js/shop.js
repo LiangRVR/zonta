@@ -68,23 +68,31 @@ function displayProducts() {
 
   productsGrid.innerHTML = products
     .filter(p => p.active)
-    .map(product => `
-      <div class="product-card">
-        <div class="product-image">
-          ${product.image || '📦'}
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">${product.name}</h3>
-          <p class="product-description">${product.description || ''}</p>
-          <div class="product-footer">
-            <span class="product-price">$${parseFloat(product.price).toFixed(2)}</span>
-            <button class="add-to-cart-btn" onclick="window.addToCart(${product.id}, event)">
-              Add to Cart
-            </button>
+    .map(product => {
+      // Check if image is a URL (starts with http:// or https://)
+      const isImageUrl = product.image && (product.image.startsWith('http://') || product.image.startsWith('https://'));
+
+      return `
+        <div class="product-card">
+          <div class="product-image">
+            ${isImageUrl
+              ? `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-placeholder\\'>📦</div>'" />`
+              : `<div class="product-placeholder">${product.image || '📦'}</div>`
+            }
+          </div>
+          <div class="product-info">
+            <h3 class="product-name">${product.name}</h3>
+            <p class="product-description">${product.description || ''}</p>
+            <div class="product-footer">
+              <span class="product-price">$${parseFloat(product.price).toFixed(2)}</span>
+              <button class="add-to-cart-btn" onclick="window.addToCart(${product.id}, event)">
+                Add to Cart
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    `)
+      `;
+    })
     .join('');
 }
 
@@ -131,21 +139,31 @@ function updateCart() {
     cartFooter.style.display = 'none';
   } else {
     cartItems.innerHTML = cart
-      .map(item => `
-        <div class="cart-item">
-          <div class="cart-item-image">${item.image}</div>
-          <div class="cart-item-info">
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+      .map(item => {
+        // Check if image is a URL (starts with http:// or https://)
+        const isImageUrl = item.image && (item.image.startsWith('http://') || item.image.startsWith('https://'));
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-image">
+              ${isImageUrl
+                ? `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='📦'" />`
+                : `<div class="cart-placeholder">${item.image || '📦'}</div>`
+              }
+            </div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+            </div>
+            <div class="cart-item-actions">
+              <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">−</button>
+              <span class="quantity">${item.quantity}</span>
+              <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">+</button>
+              <button class="remove-btn" onclick="window.removeFromCart(${item.id})">🗑️</button>
+            </div>
           </div>
-          <div class="cart-item-actions">
-            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">−</button>
-            <span class="quantity">${item.quantity}</span>
-            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">+</button>
-            <button class="remove-btn" onclick="window.removeFromCart(${item.id})">🗑️</button>
-          </div>
-        </div>
-      `)
+        `;
+      })
       .join('');
 
     // Update total
