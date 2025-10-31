@@ -31,11 +31,17 @@ zonta/
 │
 ├── backend/               # Backend API
 │   ├── src/
-│   │   └── index.js       # Express server entry point
-│   ├── config/            # Configuration files
-│   ├── package.json       # Dependencies
-│   ├── .env.example       # Environment variables template
-│   └── README.md          # Backend documentation
+│   │   ├── index.js               # Express server entry point
+│   │   ├── supabaseClient.js      # Supabase client configuration
+│   │   ├── controllers/           # Business logic
+│   │   │   └── productsController.js
+│   │   └── routes/                # API routes
+│   │       └── products.js
+│   ├── config/                    # Configuration files
+│   ├── package.json               # Dependencies
+│   ├── .env                       # Environment variables (not in git)
+│   ├── API.md                     # API documentation
+│   └── README.md                  # Backend documentation
 │
 └── README.md              # This file
 ```
@@ -54,6 +60,8 @@ zonta/
 
 ### Backend
 - ✅ **RESTful API**: Built with Express.js
+- ✅ **Supabase Integration**: Real-time database for product management
+- ✅ **Products API**: Complete CRUD operations for products
 - ✅ **Environment Configuration**: Using dotenv for secure config
 - ✅ **CORS Enabled**: Cross-origin resource sharing support
 - ✅ **Health Check Endpoint**: Monitor API status
@@ -65,9 +73,29 @@ zonta/
 
 - A modern web browser (Chrome, Firefox, Safari, Edge)
 - Node.js (v14 or higher) - for backend API
-- A web server (optional, for frontend local development)
+- Python 3 (for simple HTTP server) or any other web server
+- Supabase account (for database)
 
-### Installation
+### Quick Start (Recommended)
+
+The easiest way to start both servers:
+
+```bash
+# Make the scripts executable (first time only)
+chmod +x start-servers.sh stop-servers.sh
+
+# Start both frontend and backend servers
+./start-servers.sh
+
+# When done, stop all servers
+./stop-servers.sh
+```
+
+This will start:
+- Backend API on http://localhost:3000
+- Frontend on http://localhost:8000
+
+### Manual Installation
 
 #### Frontend Setup
 
@@ -80,7 +108,7 @@ cd frontend
 
 ```bash
 # Using Python 3
-python -m http.server 8000
+python3 -m http.server 8000
 
 # Using Node.js (http-server)
 npx http-server
@@ -103,9 +131,21 @@ cd backend
 npm install
 ```
 
-3. Create a `.env` file based on `.env.example`:
+3. Create a `.env` file with your Supabase credentials:
 ```bash
-cp .env.example .env
+# Create .env file
+cat > .env << EOF
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:8000
+EOF
 ```
 
 4. Start the development server:
@@ -133,8 +173,17 @@ The API will be available at `http://localhost:3000`
 
 ## API Endpoints
 
-- `GET /` - API welcome message
+### General
+- `GET /` - API welcome message and available endpoints
 - `GET /health` - Health check endpoint
+
+### Products (Supabase)
+- `GET /api/products` - Get all products
+- `GET /api/products/:id` - Get a single product by ID
+- `GET /api/products/categories` - Get all product categories
+- `GET /api/products/category/:category` - Get products by category
+
+For detailed API documentation, see [backend/API.md](backend/API.md)
 
 ## Tech Stack
 
@@ -147,6 +196,8 @@ The API will be available at `http://localhost:3000`
 ### Backend
 - Node.js
 - Express.js
+- Supabase (PostgreSQL database)
+- @supabase/supabase-js
 - CORS
 - dotenv
 

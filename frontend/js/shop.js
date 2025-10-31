@@ -16,75 +16,68 @@ const customerEmail = document.getElementById('customerEmail');
 const productsGrid = document.getElementById('productsGrid');
 const productsLoading = document.getElementById('productsLoading');
 
-// Mock products data (replace with API call when backend is ready)
-products = [
-  {
-    id: 1,
-    name: 'Zonta Tote Bag',
-    description: 'Durable canvas tote bag with Zonta logo. Perfect for everyday use.',
-    price: 25.00,
-    image: '👜',
-    active: true
-  },
-  {
-    id: 2,
-    name: 'Zonta T-Shirt',
-    description: 'Comfortable cotton t-shirt featuring our mission statement.',
-    price: 30.00,
-    image: '👕',
-    active: true
-  },
-  {
-    id: 3,
-    name: 'Zonta Mug',
-    description: 'Ceramic coffee mug with inspiring Zonta quote.',
-    price: 15.00,
-    image: '☕',
-    active: true
-  },
-  {
-    id: 4,
-    name: 'Zonta Pin',
-    description: 'Gold-plated enamel pin with Zonta International logo.',
-    price: 10.00,
-    image: '📌',
-    active: true
-  },
-  {
-    id: 5,
-    name: 'Zonta Notebook',
-    description: 'Hardcover journal with Zonta branding. 200 pages.',
-    price: 20.00,
-    image: '📓',
-    active: true
-  },
-  {
-    id: 6,
-    name: 'Zonta Cap',
-    description: 'Adjustable baseball cap with embroidered logo.',
-    price: 22.00,
-    image: '🧢',
-    active: true
+// Fetch products from backend API
+async function fetchProducts() {
+  try {
+    const response = await fetch(`${API_URL}/api/products`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    products = data.products || [];
+
+    console.log(`Loaded ${products.length} products from API`);
+    displayProducts();
+  } catch (error) {
+    console.error('Error fetching products:', error);
+
+    // Show error message to user
+    productsLoading.innerHTML = `
+      <div class="error-message">
+        <p style="font-size: 1.5rem;">⚠️</p>
+        <p>Unable to load products</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+          Please make sure the backend server is running on ${API_URL}
+        </p>
+        <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer;">
+          Retry
+        </button>
+      </div>
+    `;
+
+    // Keep products array empty or use fallback
+    products = [];
   }
-];
+}
 
 // Display products
 function displayProducts() {
   productsLoading.style.display = 'none';
   productsGrid.style.display = 'grid';
 
+  if (products.length === 0) {
+    productsGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+        <p style="font-size: 1.2rem; color: #666;">No products available at the moment.</p>
+      </div>
+    `;
+    return;
+  }
+
   productsGrid.innerHTML = products
     .filter(p => p.active)
     .map(product => `
       <div class="product-card">
         <div class="product-image">
-          ${product.image}
+          ${product.image || '📦'}
         </div>
         <div class="product-info">
           <h3 class="product-name">${product.name}</h3>
-          <p class="product-description">${product.description}</p>
+          <p class="product-description">${product.description || ''}</p>
           <div class="product-footer">
-            <span class="product-price">$${product.price.toFixed(2)}</span>
+            <span class="product-price">$${parseFloat(product.price).toFixed(2)}</span>
             <button class="add-to-cart-btn" onclick="window.addToCart(${product.id}, event)">
               Add to Cart
             </button>
@@ -248,7 +241,9 @@ checkoutBtn.addEventListener('click', async () => {
 });
 
 // Initialize
-setTimeout(() => {
-  displayProducts();
+document.addEventListener('DOMContentLoaded', async () => {
+  // Fetch products from API
+  await fetchProducts();
+  // Update cart display
   updateCart();
-}, 500);
+});
