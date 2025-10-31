@@ -25,6 +25,7 @@ Once your project is created:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
 ## Create the Products Table
@@ -81,13 +82,13 @@ CREATE INDEX idx_products_display_order ON products(display_order);
 Run this SQL to add some sample products:
 
 ```sql
-INSERT INTO products (name, description, price, category, image, active, display_order) VALUES
-  ('Zonta Tote Bag', 'Durable canvas tote bag with Zonta logo. Perfect for everyday use.', 25.00, 'Accessories', '👜', true, 1),
-  ('Zonta T-Shirt', 'Comfortable cotton t-shirt featuring our mission statement.', 30.00, 'Apparel', '👕', true, 2),
-  ('Zonta Mug', 'Ceramic coffee mug with inspiring Zonta quote.', 15.00, 'Home', '☕', true, 3),
-  ('Zonta Pin', 'Gold-plated enamel pin with Zonta International logo.', 10.00, 'Accessories', '📌', true, 4),
-  ('Zonta Notebook', 'Hardcover journal with Zonta branding. 200 pages.', 20.00, 'Stationery', '📓', true, 5),
-  ('Zonta Cap', 'Adjustable baseball cap with embroidered logo.', 22.00, 'Apparel', '🧢', true, 6);
+INSERT INTO products (name, description, price, image, display_order) VALUES
+  ('Zonta Tote Bag', 'Durable canvas tote bag with Zonta logo. Perfect for everyday use.', 25.00, 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/bag.png', 0),
+  ('Zonta T-Shirt', 'Comfortable cotton t-shirt featuring our mission statement.', 30.00, 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/t-shirt.png', 0),
+  ('Zonta Mug', 'Ceramic coffee mug with inspiring Zonta quote.', '15.00', 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/mug.png', 0),
+  ('Zonta Pin', 'Gold-plated enamel pin with Zonta International logo.', '10.00', 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/pin.png', 0),
+  ('Zonta Notebook', 'Hardcover journal with Zonta branding. 200 pages.', '20.00', 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/notebook.png', 0),
+  ('Zonta Cap', 'Adjustable baseball cap with embroidered logo.', '22.00', 'https://uwdzcgsbmqoiexnolahw.supabase.co/storage/v1/object/public/products-images/cap.png', 0);
 ```
 
 ## Configure Storage (Optional)

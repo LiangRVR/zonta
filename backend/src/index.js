@@ -11,6 +11,13 @@ const stripeRoutes = require('./routes/stripe');
 
 // Middleware
 app.use(cors());
+
+// Stripe webhook needs raw body, so handle it before JSON parsing
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req, res, next) => {
+  next();
+});
+
+// Regular JSON parsing for other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,7 +33,8 @@ app.get('/', (req, res) => {
       categories: '/api/products/categories',
       productsByCategory: '/api/products/category/:category',
       createCheckout: 'POST /api/stripe/create-checkout-session',
-      getSession: '/api/stripe/session/:sessionId'
+      getSession: '/api/stripe/session/:sessionId',
+      webhook: 'POST /api/stripe/webhook'
     }
   });
 });
