@@ -136,22 +136,36 @@ async function fulfillCheckout(sessionId) {
 
     // Retrieve the Checkout Session from the API with line_items expanded
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['line_items', 'payment_intent'],
+      expand: ['line_items', 'payment_intent', 'customer'],
+    });
+
+    console.log('Retrieved session details:', {
+      id: checkoutSession.id,
+      payment_status: checkoutSession.payment_status,
+      customer_details: checkoutSession.customer_details,
+      shipping_details: checkoutSession.shipping_details,
+      shipping: checkoutSession.shipping,
     });
 
     // Check the Checkout Session's payment_status property
     if (checkoutSession.payment_status !== 'unpaid') {
+      // Get shipping address - Stripe uses 'shipping_details' for the full object
+      const shippingAddress = checkoutSession.shipping_details?.address || checkoutSession.shipping?.address || null;
+      const shippingName = checkoutSession.shipping_details?.name || checkoutSession.shipping?.name || null;
+
       // Perform fulfillment - Update order in Supabase
       const updateData = {
         status: 'paid',
         customer_name: checkoutSession.customer_details?.name || null,
         stripe_payment_intent: checkoutSession.payment_intent?.id || checkoutSession.payment_intent || null,
-        shipping_address: checkoutSession.shipping_details ? {
-          name: checkoutSession.shipping_details.name,
-          address: checkoutSession.shipping_details.address,
+        shipping_address: (shippingAddress && shippingName) ? {
+          name: shippingName,
+          address: shippingAddress,
         } : null,
         paid_at: new Date().toISOString(),
       };
+
+      console.log('Updating order with data:', JSON.stringify(updateData, null, 2));
 
       const { error: updateError } = await supabase
         .from('orders')
@@ -202,6 +216,7 @@ const handleWebhook = async (req, res) => {
   // Handle the event
   try {
     // Handle immediate and delayed payment completions
+    console.log('Processing webhook event:', event.type);
     if (
       event.type === 'checkout.session.completed' ||
       event.type === 'checkout.session.async_payment_succeeded'
