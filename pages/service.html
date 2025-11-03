@@ -11,26 +11,151 @@
 <body>
     <div data-include="../includes/header.html"></div>
 
-    <section class="container" id="service" style="margin-top: 70px;">
-        <h2 class="section-title">What We Do</h2>
-        <p class="section-subtitle">Making a meaningful impact through service, advocacy, and education</p>
-        <div class="icon-cards">
-            <div class="icon-card">
-                <img src="../images/icon-hand.png" alt="Service Icon">
-                <h3>Community Service</h3>
-                <p>We actively engage in service projects that make a meaningful impact in Naples and beyond, supporting women and girls in our community through direct action and support programs.</p>
-            </div>
-            <div class="icon-card">
-                <img src="../images/icon-scales.png" alt="Justice Icon">
-                <h3>Advocacy & Justice</h3>
-                <p>We advocate for gender equality and work to advance the status of women worldwide through local and global initiatives, fighting for equal rights and opportunities.</p>
-            </div>
-            <div class="icon-card">
-                <img src="../images/icon-gavel.png" alt="Action Icon">
-                <h3>Direct Action</h3>
-                <p>We take concrete steps to combat human trafficking, domestic violence, and discrimination while supporting law enforcement and providing resources to those in need.</p>
-            </div>
+
+<section class="hero" id="home">      
+    <div class="hero-text">        
+            <div style="text-align: center;">
+                 <img class = "sizepg" src="/images/hand1Transparent.png" alt="Service Icon" />
+                 <h2>SERVICE| ADELLE HUNTER,CHAIRPERSON</h2>
+
+
+                 <div class = "discription">               
+                    <p>Zonta International advocates for women’s human rights and gender equality in all areas of women’s rights.  ZI partners with UN agencies like UNFPA, U.S. Fund NICEF which financially support projects to empower women and girls. 
+                    The projects focus on issues; health, education, equality and human rights, human trafficking etc.  At the local club levels the club are functioning at one hundred percent. The club projects focus on women and girls issues.  Zonta
+                    Club of Naples service committee is responsible for finding out what the needs are for the community.  This committee meets monthly to discuss projects and makes recommendations to the board. The committee is to coordinate those projects 
+                    approved in which all members are to participate in the activities and events.
+                    </p>
+            
+                </div>
+           </div>  
+    </div>
+
+    
+    </section>
+<!----Conrado Santizo-->
+
+
+
+
+
+
+
+ <section class="container" id="service" style="margin-top: -150px;">
+<!----Nicholas Pelletier---->
+
+<script type="module">
+  const modal = document.getElementById("modal");
+  const modalImg = document.getElementById("modal-img");
+
+  // Add click to expand images
+  document.querySelectorAll(".card-overlay").forEach(overlay => {
+    overlay.addEventListener("click", function(e) {
+      const img = this.previousElementSibling;
+      modalImg.src = img.src;
+      modal.classList.add("active");
+    });
+  });
+
+  // Close modal when clicked anywhere
+  modal.addEventListener("click", () => {
+    modal.classList.remove("active");
+  });
+</script>
+
+   <section class="container" id="service" style="margin-top: 70px;">
+    <h2 class="section-title">What We Do</h2>
+
+    <!-- First Block: Image Right -->
+    <div class="image-text-container right-image">
+        <img src="../images/handsZonta.png" alt="handsZonta" style="--img-width: 600px;">
+        <div>
+            <h2>Our Mission</h2>
+            <p>
+                The Zonta Club of Naples is a local chapter of Zonta International, a global organization dedicated to empowering women and girls. In Naples, they focus on service, advocacy, and education by supporting programs that benefit women and families, such as donating to shelters, funding scholarships, and mentoring student Z‑Clubs at local schools. They also engage in advocacy campaigns to raise awareness about issues affecting women and girls, organize community events, and collaborate with local organizations to address needs in the Collier County area. Through these efforts, they provide both tangible community support and opportunities for leadership development among women and youth.
+
+            </p>
         </div>
+    </div>
+
+    <!-- Second Block: Image Left -->
+    <div class="image-text-container left-image">
+        <img src="../images/feedingZonta.jpg" alt="feedingZonta" style="--img-width: 600px;">
+        <div>
+            <h2>Feeding the Hungry</h2>
+            <p>
+                We hosted a feeding the needy event in Naples, bringing together volunteers to prepare and distribute nutritious meals to community members in need. Throughout the day, guests were welcomed into a warm and supportive environment, where they could enjoy not only a meal but also conversation, care, and a sense of belonging. Seeing the smiles and gratitude of those we served reminded us of the importance of coming together to support one another. The event reflected our commitment to service, compassion, and making a meaningful, positive impact in the Naples community.
+            </p>
+        </div>
+    </div>
+
+    <!-- Third Block: Image Right -->
+    <div class="image-text-container right-image">
+        <img src="../images/cookiesforcops.png" alt="copCookies" style="--img-width: 600px;">
+        <div>
+            <h2>Cookies for Caregivers</h2>
+            <p>
+                The Zonta Club of Naples launched another service project in April 2021 to show appreciation for the dedicated caregivers at the Naples Community Hospital – Downtown Campus. As part of the project, we delivered freshly baked cookies to the hospital staff, offering a small but heartfelt token of gratitude for their tireless work and compassion. The initiative provided an opportunity to personally connect with the caregivers, thank them for the care they provide to our community, and brighten their day during challenging times. Projects like this reflect Zonta’s ongoing commitment to recognizing and supporting those who make a meaningful difference in the lives of others.
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="image-expander">
+  <input type="checkbox" id="toggle-images" />
+  <label for="toggle-images" class="expander-header">Gallery</label>
+
+<div class="expander-content">
+  <div class="image-gallery">
+    <div class="card-container">
+      <img class="card" src="../images/image-1.jpg" alt="Image 1">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-1.jpg" alt="Image 2">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-3.jpg" alt="Image 3">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-4.jpg" alt="Image 4">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-5.jpg" alt="Image 5">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-6.jpg" alt="Image 6">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-1.jpg" alt="Image 1">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-1.jpg" alt="Image 2">
+      <div class="card-overlay">+</div>
+    </div>
+    <div class="card-container">
+      <img class="card" src="../images/image-3.jpg" alt="Image 3">
+      <div class="card-overlay">+</div>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen modal -->
+<div class="modal" id="modal">
+  <img src="" alt="Expanded image" id="modal-img">
+</div>
+
+
+
+
+
+
+
     </section>
 
     <div data-include="../includes/footer.html"></div>

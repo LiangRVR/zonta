@@ -11,48 +11,233 @@
 <body>
     <div data-include="../includes/header.html"></div>
 
-    <section class="scholarships-section" id="scholarships" style="margin-top: 70px;">
+<section class="hero" id="home">      
+    <div class="hero-text">        
+            <div style="text-align: center;">
+                 <img class = "sizepg" src="/images/education4Transparent.png" alt="Service Icon" />
+                 <h2>SCHOLARSHIPS |KIM ARTIS, CHAIRPERSON</h2>
+                 <div class = "discription">               
+                    <p>
+                   We Have Proven over the Years that by Working Together Across Political and Social Boundaries – We Can Make a Difference!
+                    </p>
+            
+                </div>
+           </div>  
+    </div>
+</section>
+
+
+<!---pics and schalorship fgcu--->
+<section class="scholarships-section" id="scholarships" style="margin-top: -130px;">
         <div class="container">
             <h2 class="section-title">Scholarships</h2>
-            <p class="section-subtitle">Investing in the Future of Women in Our Community</p>
-            <div class="scholarship-cards">
-                <div class="scholarship-card">
-                    <h3>Young Women in Public Affairs Award</h3>
-                    <p>Recognizing young women ages 16-19 who demonstrate leadership skills and commitment to public service and civic causes.</p>
-                    <ul>
-                        <li>Open to high school students</li>
-                        <li>Focus on leadership and volunteerism</li>
-                        <li>Local and international opportunities</li>
-                        <li>Annual awards program</li>
-                    </ul>
-                </div>
-                <div class="scholarship-card">
-                    <h3>Women in Technology Scholarship</h3>
-                    <p>Supporting women pursuing undergraduate degrees in technology-related fields and applied sciences.</p>
-                    <ul>
-                        <li>Undergraduate programs</li>
-                        <li>STEM fields focus</li>
-                        <li>Merit-based awards</li>
-                        <li>Career development support</li>
-                    </ul>
-                </div>
-                <div class="scholarship-card">
-                    <h3>Jane M. Klausman Women in Business Scholarship</h3>
-                    <p>Assisting women pursuing undergraduate or master's degrees in business-related fields.</p>
-                    <ul>
-                        <li>Business degree programs</li>
-                        <li>Graduate and undergraduate</li>
-                        <li>Career-focused support</li>
-                        <li>International recognition</li>
-                    </ul>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="#apply" class="btn btn-secondary"><span>Download Application</span></a>
-                <a href="#recipients" class="btn btn-primary"><span>Meet Our Recipients</span></a>
-            </div>
         </div>
-    </section>
+
+
+
+
+  <div class="scholarship-container">
+    <div class="triptych">
+      <figure class="tile large">
+        <img src="/images/twopic.png" alt="Left photo">
+      </figure>
+
+      <figure class="tile large">
+        <img src="/images/fgcugroup.png" alt="FGCU campus">
+      </figure>
+
+      <figure class="tile large">
+        <img src="/images/fundmoney.png" alt="Right photo">
+      </figure>
+    </div>
+
+
+
+    <div class="endowment-copy">
+      <h3>Memorial Scholarship Endowment Fund</h3>
+      <p>
+        <strong>On November 7, 2019</strong> a Memorial Scholarship Endowed Fund was established
+        at FGCU in the names of two past Zontians, Helen “Honey” Koenig Gardiner and
+        Sally Sitta, and The Zonta Club of Naples in the amount of <strong>$25,000</strong>.
+      </p>
+        
+      <!--- button
+        <div class="cta-buttons">
+            <a
+              href="pages/membership.html"
+              class="btn btn-primary"
+              ><span>Learn more</span></a
+            >
+          </div>  
+        -->
+    </div>
+  </div>
+</section>
+<!---pics and schalorship fgcu--->
+
+
+
+<section class="scholarship-split">
+  <!-- LEFT: text/card -->
+  <div class="left-info card">
+    <h3>Scholarship-Opportunity</h3>
+
+    <ul class="opp-list">
+      <li>Young women in public Affairs</li>
+      <li>Sally Sitta Award</li>
+      <li>Young women in Business</li>
+      <li>Amelia Earhart</li>
+    </ul>
+
+    <div class="cta-buttons">
+      <a href="https://www.zonta.org/Media-News/News-Feed/News-Detail/2019-jmk-women-in-business-scholarship-materials-now-online" class="btn"><span>Learn more</span></a>
+    </div>
+  </div>
+
+  <!-- RIGHT: slider (unchanged) -->
+  <section class="slider right-slider" aria-label="Photo carousel">
+    <div class="slider-viewport">
+      <button class="nav prev" aria-label="Previous slide">←</button>
+      <img class="slide-image" src="" alt="">
+      <button class="nav next" aria-label="Next slide">→</button>
+    </div>
+
+    <div class="slider-caption" aria-live="polite">
+      <h3 class="slide-title"></h3>
+      <p class="slide-desc"></p>
+    </div>
+
+    <div class="dots" role="tablist" aria-label="Slide selectors"></div>
+  </section>
+</section>
+
+
+
+
+
+
+<script>
+  // 1) Your slides (edit these)
+  const slides = [
+    {
+      src: "/images/sc1.png",
+      alt: "Scholarship recipient smiling",
+      title: "Award Winner",
+      desc: "Mallory Poff Receives YWPA Award Dr. Janice Green, Linda K. Pearson present award at monthly business meeting."
+    },
+    {
+      src: "/images/sc2.png",
+      alt: "FGCU campus fountain",
+      title: "Award Winner",
+      desc: "Kastahina Dooze | Zonta Club of Naples Sally Sitta Award Recipient was awarded a $1,000 scholarship "
+    },
+    {
+      src: "/images/sc3.png",
+      alt: "STEM workshop photo",
+      title: "Award Winner",
+      desc: "Mallory Poff YWPA Recipient"
+    },
+     {
+      src: "/images/sc4.png",
+      alt: "STEM workshop photo",
+      title: "Award Winner",
+      desc: "Taylor Sorrell presenting at Undergrad Research Conference."
+    },
+     {
+      src: "/images/sc5.png",
+      alt: "STEM workshop photo",
+      title: "Award winner",
+      desc: "Zonta Club of Naples awarded Taylor Sorrell YWPA Award"
+    }
+  ];
+
+  // 2) Grab elements
+  const slider = document.querySelector(".slider");
+  const imgEl = slider.querySelector(".slide-image");
+  const titleEl = slider.querySelector(".slide-title");
+  const descEl = slider.querySelector(".slide-desc");
+  const dotsEl = slider.querySelector(".dots");
+  const prevBtn = slider.querySelector(".prev");
+  const nextBtn = slider.querySelector(".next");
+
+  // 3) Build dots
+  slides.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-label", `Go to slide ${i+1}`);
+    b.addEventListener("click", () => go(i, true));
+    dotsEl.appendChild(b);
+  });
+
+  let index = 0;
+  let timer = null;
+  const AUTOPLAY_MS = 4500;
+
+  function render(i) {
+    // fade in on load
+    imgEl.style.opacity = 0;
+    imgEl.onload = () => (imgEl.style.opacity = 1);
+
+    imgEl.src = slides[i].src;
+    imgEl.alt = slides[i].alt || "";
+    titleEl.textContent = slides[i].title || "";
+    descEl.textContent = slides[i].desc || "";
+
+    [...dotsEl.children].forEach((d, j) => {
+      d.setAttribute("aria-selected", j === i ? "true" : "false");
+    });
+  }
+
+  function go(i, resetTimer=false) {
+    index = (i + slides.length) % slides.length;
+    render(index);
+    if (resetTimer) restartAutoplay();
+  }
+
+  function next(resetTimer=false) { go(index + 1, resetTimer); }
+  function prev(resetTimer=false) { go(index - 1, resetTimer); }
+
+  function startAutoplay() {
+    stopAutoplay();
+    timer = setInterval(() => next(false), AUTOPLAY_MS);
+  }
+  function stopAutoplay() { if (timer) clearInterval(timer); }
+  function restartAutoplay() { stopAutoplay(); startAutoplay(); }
+
+  // Buttons
+  nextBtn.addEventListener("click", () => next(true));
+  prevBtn.addEventListener("click", () => prev(true));
+
+  // Pause on hover/focus (resumes when leaving)
+  slider.addEventListener("mouseenter", stopAutoplay);
+  slider.addEventListener("mouseleave", startAutoplay);
+  slider.addEventListener("focusin", stopAutoplay);
+  slider.addEventListener("focusout", startAutoplay);
+
+  // Keyboard arrows
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") next(true);
+    if (e.key === "ArrowLeft")  prev(true);
+  });
+
+  // Swipe (basic)
+  let touchX = null;
+  slider.addEventListener("touchstart", e => touchX = e.touches[0].clientX, {passive:true});
+  slider.addEventListener("touchend", e => {
+    if (touchX == null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) dx < 0 ? next(true) : prev(true);
+    touchX = null;
+  }, {passive:true});
+
+  // Init
+  render(index);
+  startAutoplay();
+</script>
+
+
+
+
 
     <div data-include="../includes/footer.html"></div>
 
