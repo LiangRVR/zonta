@@ -1,42 +1,48 @@
 # Zonta Club of Naples Website
 
-A modern, responsive multi-page website for the Zonta Club of Naples, built with clean HTML, CSS, and JavaScript.
+A full-stack web application for the Zonta Club of Naples. The project consists of a modern, responsive frontend built with HTML, CSS, and JavaScript, and a RESTful API backend built with Node.js and Express.
 
 ## Project Structure
 
 ```
 zonta/
-├── index.html              # Homepage
-├── css/
-│   └── styles.css          # Main stylesheet
-├── js/
-│   |-- main.js             # Main JavaScript file
-|   └── nav-footer-share.js # Manage the shared header and footer
-├── pages/
-│   ├── about.html          # About page
-│   ├── service.html        # Service page
-│   ├── advocacy.html       # Advocacy page
-│   ├── scholarships.html   # Scholarships page
-│   ├── membership.html     # Membership page
-│   └── action.html         # Zonta in Action page
-├── includes/
-│   ├── header.html         # Reusable header component
-│   └── footer.html         # Reusable footer component
-└── images/                 # Image assets
-    ├── zonta-logo.png
-    ├── zonta-100-years.png
-    ├── historic-group.jpg
-    ├── current-group.jpg
-    ├── about-collage.jpg
-    ├── meeting-flyer.jpg
-    ├── qa-image.jpg
-    ├── icon-hand.png
-    ├── icon-scales.png
-    └── icon-gavel.png
+├── frontend/               # Frontend application
+│   ├── index.html         # Homepage
+│   ├── css/               # Stylesheets
+│   │   ├── styles.css     # Main stylesheet
+│   │   └── shop.css       # Shop page styles
+│   ├── js/                # JavaScript files
+│   │   ├── main.js        # Main JavaScript file
+│   │   ├── nav-footer-share.js  # Shared header/footer management
+│   │   └── shop.js        # Shop page functionality
+│   ├── pages/             # HTML pages
+│   │   ├── about.html
+│   │   ├── service.html
+│   │   ├── advocacy.html
+│   │   ├── scholarships.html
+│   │   ├── membership.html
+│   │   ├── events.html
+│   │   └── shop.html
+│   ├── includes/          # Reusable components
+│   │   ├── header.html
+│   │   └── footer.html
+│   ├── images/            # Image assets
+│   └── README.md          # Frontend documentation
+│
+├── backend/               # Backend API
+│   ├── src/
+│   │   └── index.js       # Express server entry point
+│   ├── config/            # Configuration files
+│   ├── package.json       # Dependencies
+│   ├── .env.example       # Environment variables template
+│   └── README.md          # Backend documentation
+│
+└── README.md              # This file
 ```
 
 ## Features
 
+### Frontend
 - ✅ **Fully Responsive**: Works on all devices (desktop, tablet, mobile)
 - ✅ **Modern Design**: Clean, professional layout with smooth animations
 - ✅ **Multi-Page Architecture**: Separate pages for different sections
@@ -46,18 +52,31 @@ zonta/
 - ✅ **Counter Animation**: Animated statistics counters
 - ✅ **Modular Structure**: Separated HTML, CSS, and JavaScript
 
+### Backend
+- ✅ **RESTful API**: Built with Express.js
+- ✅ **Environment Configuration**: Using dotenv for secure config
+- ✅ **CORS Enabled**: Cross-origin resource sharing support
+- ✅ **Health Check Endpoint**: Monitor API status
+- ✅ **Scalable Structure**: Organized codebase for easy expansion
+
 ## Getting Started
 
 ### Prerequisites
 
 - A modern web browser (Chrome, Firefox, Safari, Edge)
-- A web server (optional, for local development)
+- Node.js (v14 or higher) - for backend API
+- A web server (optional, for frontend local development)
 
 ### Installation
 
-1. Clone or download this repository
-2. Open `index.html` in your web browser, or
-3. Use a local development server:
+#### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Serve the files using any of these methods:
 
 ```bash
 # Using Python 3
@@ -70,23 +89,72 @@ npx http-server
 php -S localhost:8000
 ```
 
-4. Navigate to `http://localhost:8000` in your browser
+3. Navigate to `http://localhost:8000` in your browser
+
+#### Backend Setup
+
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file based on `.env.example`:
+```bash
+cp .env.example .env
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+Or start the production server:
+```bash
+npm start
+```
+
+The API will be available at `http://localhost:3000`
 
 ## Pages
 
-- **Home** (`index.html`): Landing page with hero section, services overview, and statistics
-- **Who We Are** (`pages/about.html`): Organization history, mission, and values
-- **Service** (`pages/service.html`): Community service initiatives
-- **Advocacy** (`pages/advocacy.html`): Service areas and advocacy work
-- **Scholarships** (`pages/scholarships.html`): Available scholarships and applications
-- **Membership** (`pages/membership.html`): Membership benefits and application
-- **Zonta in Action** (`pages/action.html`): Meetings, events, and FAQ
+- **Home** (`frontend/index.html`): Landing page with hero section, services overview, and statistics
+- **Who We Are** (`frontend/pages/about.html`): Organization history, mission, and values
+- **Service** (`frontend/pages/service.html`): Community service initiatives
+- **Advocacy** (`frontend/pages/advocacy.html`): Service areas and advocacy work
+- **Scholarships** (`frontend/pages/scholarships.html`): Available scholarships and applications
+- **Membership** (`frontend/pages/membership.html`): Membership benefits and application
+- **Events** (`frontend/pages/events.html`): Meetings, events, and activities
+- **Shop** (`frontend/pages/shop.html`): Online store
+
+## API Endpoints
+
+- `GET /` - API welcome message
+- `GET /health` - Health check endpoint
+
+## Tech Stack
+
+### Frontend
+- HTML5
+- CSS3 (with CSS Variables)
+- Vanilla JavaScript
+- Responsive Design
+
+### Backend
+- Node.js
+- Express.js
+- CORS
+- dotenv
 
 ## Customization
 
-### Colors
+### Frontend Colors
 
-Edit the CSS variables in `css/styles.css`:
+Edit the CSS variables in `frontend/css/styles.css`:
 
 ```css
 :root {
@@ -101,19 +169,53 @@ Edit the CSS variables in `css/styles.css`:
 }
 ```
 
-### Content
+### Frontend Content
 
-- Edit individual HTML files to update content
-- Update images in the `images/` folder
+- Edit individual HTML files in `frontend/` to update content
+- Update images in the `frontend/images/` folder
 - Modify navigation links in each page's header
+
+### Backend Configuration
+
+- Update environment variables in `backend/.env`
+- Add new routes in `backend/src/index.js`
+- Configure middleware and database connections as needed
 
 ### Reusable Components
 
-The `includes/` folder contains reusable HTML snippets:
+The `frontend/includes/` folder contains reusable HTML snippets:
 - `header.html` - Navigation header
 - `footer.html` - Footer section
 
 Copy these into new pages to maintain consistency.
+}
+```
+
+### Frontend Content
+
+- Edit individual HTML files in `frontend/` to update content
+- Update images in the `frontend/images/` folder
+- Modify navigation links in each page's header
+
+### Backend Configuration
+
+- Update environment variables in `backend/.env`
+- Add new routes in `backend/src/index.js`
+- Configure middleware and database connections as needed
+
+### Reusable Components
+
+The `frontend/includes/` folder contains reusable HTML snippets:
+- `header.html` - Navigation header
+- `footer.html` - Footer section
+
+Copy these into new pages to maintain consistency.
+
+## Development
+
+For detailed information about each part of the project, see:
+- [Frontend Documentation](frontend/README.md)
+- [Backend Documentation](backend/README.md)
 
 ## Browser Support
 
@@ -125,11 +227,17 @@ Copy these into new pages to maintain consistency.
 
 ## Performance
 
+### Frontend
 - Optimized CSS with minimal selectors
 - Efficient JavaScript with event delegation
 - Intersection Observer for scroll animations
 - No external dependencies (pure vanilla JS)
 
+### Backend
+- Lightweight Express.js framework
+- Minimal middleware overhead
+- Scalable architecture for future expansion
+
 ---
 
-**Note**: This is a static website. For dynamic content management, consider integrating a CMS like WordPress, or use server-side includes (SSI) to automatically include header/footer components.
+**Note**: For detailed setup instructions and advanced configuration, refer to the README files in the `frontend/` and `backend/` directories.
