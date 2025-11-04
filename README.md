@@ -1,42 +1,54 @@
 # Zonta Club of Naples Website
 
-A modern, responsive multi-page website for the Zonta Club of Naples, built with clean HTML, CSS, and JavaScript.
+A full-stack web application for the Zonta Club of Naples. The project consists of a modern, responsive frontend built with HTML, CSS, and JavaScript, and a RESTful API backend built with Node.js and Express.
 
 ## Project Structure
 
 ```
 zonta/
-├── index.html              # Homepage
-├── css/
-│   └── styles.css          # Main stylesheet
-├── js/
-│   |-- main.js             # Main JavaScript file
-|   └── nav-footer-share.js # Manage the shared header and footer
-├── pages/
-│   ├── about.html          # About page
-│   ├── service.html        # Service page
-│   ├── advocacy.html       # Advocacy page
-│   ├── scholarships.html   # Scholarships page
-│   ├── membership.html     # Membership page
-│   └── action.html         # Zonta in Action page
-├── includes/
-│   ├── header.html         # Reusable header component
-│   └── footer.html         # Reusable footer component
-└── images/                 # Image assets
-    ├── zonta-logo.png
-    ├── zonta-100-years.png
-    ├── historic-group.jpg
-    ├── current-group.jpg
-    ├── about-collage.jpg
-    ├── meeting-flyer.jpg
-    ├── qa-image.jpg
-    ├── icon-hand.png
-    ├── icon-scales.png
-    └── icon-gavel.png
+├── frontend/               # Frontend application
+│   ├── index.html         # Homepage
+│   ├── css/               # Stylesheets
+│   │   ├── styles.css     # Main stylesheet
+│   │   └── shop.css       # Shop page styles
+│   ├── js/                # JavaScript files
+│   │   ├── main.js        # Main JavaScript file
+│   │   ├── nav-footer-share.js  # Shared header/footer management
+│   │   └── shop.js        # Shop page functionality
+│   ├── pages/             # HTML pages
+│   │   ├── about.html
+│   │   ├── service.html
+│   │   ├── advocacy.html
+│   │   ├── scholarships.html
+│   │   ├── membership.html
+│   │   ├── events.html
+│   │   └── shop.html
+│   ├── includes/          # Reusable components
+│   │   ├── header.html
+│   │   └── footer.html
+│   ├── images/            # Image assets
+│   └── README.md          # Frontend documentation
+│
+├── backend/               # Backend API
+│   ├── src/
+│   │   ├── index.js               # Express server entry point
+│   │   ├── supabaseClient.js      # Supabase client configuration
+│   │   ├── controllers/           # Business logic
+│   │   │   └── productsController.js
+│   │   └── routes/                # API routes
+│   │       └── products.js
+│   ├── config/                    # Configuration files
+│   ├── package.json               # Dependencies
+│   ├── .env                       # Environment variables (not in git)
+│   ├── API.md                     # API documentation
+│   └── README.md                  # Backend documentation
+│
+└── README.md              # This file
 ```
 
 ## Features
 
+### Frontend
 - ✅ **Fully Responsive**: Works on all devices (desktop, tablet, mobile)
 - ✅ **Modern Design**: Clean, professional layout with smooth animations
 - ✅ **Multi-Page Architecture**: Separate pages for different sections
@@ -46,22 +58,57 @@ zonta/
 - ✅ **Counter Animation**: Animated statistics counters
 - ✅ **Modular Structure**: Separated HTML, CSS, and JavaScript
 
+### Backend
+- ✅ **RESTful API**: Built with Express.js
+- ✅ **Supabase Integration**: Real-time database for product management
+- ✅ **Products API**: Complete CRUD operations for products
+- ✅ **Environment Configuration**: Using dotenv for secure config
+- ✅ **CORS Enabled**: Cross-origin resource sharing support
+- ✅ **Health Check Endpoint**: Monitor API status
+- ✅ **Scalable Structure**: Organized codebase for easy expansion
+
 ## Getting Started
 
 ### Prerequisites
 
 - A modern web browser (Chrome, Firefox, Safari, Edge)
-- A web server (optional, for local development)
+- Node.js (v14 or higher) - for backend API
+- Python 3 (for simple HTTP server) or any other web server
+- Supabase account (for database)
 
-### Installation
+### Quick Start (Recommended)
 
-1. Clone or download this repository
-2. Open `index.html` in your web browser, or
-3. Use a local development server:
+The easiest way to start both servers:
+
+```bash
+# Make the scripts executable (first time only)
+chmod +x start-servers.sh stop-servers.sh
+
+# Start both frontend and backend servers
+./start-servers.sh
+
+# When done, stop all servers
+./stop-servers.sh
+```
+
+This will start:
+- Backend API on http://localhost:3000
+- Frontend on http://localhost:8000
+
+### Manual Installation
+
+#### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Serve the files using any of these methods:
 
 ```bash
 # Using Python 3
-python -m http.server 8000
+python3 -m http.server 8000
 
 # Using Node.js (http-server)
 npx http-server
@@ -70,23 +117,95 @@ npx http-server
 php -S localhost:8000
 ```
 
-4. Navigate to `http://localhost:8000` in your browser
+3. Navigate to `http://localhost:8000` in your browser
+
+#### Backend Setup
+
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file with your Supabase credentials:
+```bash
+# Create .env file
+cat > .env << EOF
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:8000
+EOF
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+Or start the production server:
+```bash
+npm start
+```
+
+The API will be available at `http://localhost:3000`
 
 ## Pages
 
-- **Home** (`index.html`): Landing page with hero section, services overview, and statistics
-- **Who We Are** (`pages/about.html`): Organization history, mission, and values
-- **Service** (`pages/service.html`): Community service initiatives
-- **Advocacy** (`pages/advocacy.html`): Service areas and advocacy work
-- **Scholarships** (`pages/scholarships.html`): Available scholarships and applications
-- **Membership** (`pages/membership.html`): Membership benefits and application
-- **Zonta in Action** (`pages/action.html`): Meetings, events, and FAQ
+- **Home** (`frontend/index.html`): Landing page with hero section, services overview, and statistics
+- **Who We Are** (`frontend/pages/about.html`): Organization history, mission, and values
+- **Service** (`frontend/pages/service.html`): Community service initiatives
+- **Advocacy** (`frontend/pages/advocacy.html`): Service areas and advocacy work
+- **Scholarships** (`frontend/pages/scholarships.html`): Available scholarships and applications
+- **Membership** (`frontend/pages/membership.html`): Membership benefits and application
+- **Events** (`frontend/pages/events.html`): Meetings, events, and activities
+- **Shop** (`frontend/pages/shop.html`): Online store
+
+## API Endpoints
+
+### General
+- `GET /` - API welcome message and available endpoints
+- `GET /health` - Health check endpoint
+
+### Products (Supabase)
+- `GET /api/products` - Get all products
+- `GET /api/products/:id` - Get a single product by ID
+- `GET /api/products/categories` - Get all product categories
+- `GET /api/products/category/:category` - Get products by category
+
+For detailed API documentation, see [backend/API.md](backend/API.md)
+
+## Tech Stack
+
+### Frontend
+- HTML5
+- CSS3 (with CSS Variables)
+- Vanilla JavaScript
+- Responsive Design
+
+### Backend
+- Node.js
+- Express.js
+- Supabase (PostgreSQL database)
+- @supabase/supabase-js
+- CORS
+- dotenv
 
 ## Customization
 
-### Colors
+### Frontend Colors
 
-Edit the CSS variables in `css/styles.css`:
+Edit the CSS variables in `frontend/css/styles.css`:
 
 ```css
 :root {
@@ -101,19 +220,53 @@ Edit the CSS variables in `css/styles.css`:
 }
 ```
 
-### Content
+### Frontend Content
 
-- Edit individual HTML files to update content
-- Update images in the `images/` folder
+- Edit individual HTML files in `frontend/` to update content
+- Update images in the `frontend/images/` folder
 - Modify navigation links in each page's header
+
+### Backend Configuration
+
+- Update environment variables in `backend/.env`
+- Add new routes in `backend/src/index.js`
+- Configure middleware and database connections as needed
 
 ### Reusable Components
 
-The `includes/` folder contains reusable HTML snippets:
+The `frontend/includes/` folder contains reusable HTML snippets:
 - `header.html` - Navigation header
 - `footer.html` - Footer section
 
 Copy these into new pages to maintain consistency.
+}
+```
+
+### Frontend Content
+
+- Edit individual HTML files in `frontend/` to update content
+- Update images in the `frontend/images/` folder
+- Modify navigation links in each page's header
+
+### Backend Configuration
+
+- Update environment variables in `backend/.env`
+- Add new routes in `backend/src/index.js`
+- Configure middleware and database connections as needed
+
+### Reusable Components
+
+The `frontend/includes/` folder contains reusable HTML snippets:
+- `header.html` - Navigation header
+- `footer.html` - Footer section
+
+Copy these into new pages to maintain consistency.
+
+## Development
+
+For detailed information about each part of the project, see:
+- [Frontend Documentation](frontend/README.md)
+- [Backend Documentation](backend/README.md)
 
 ## Browser Support
 
@@ -125,11 +278,17 @@ Copy these into new pages to maintain consistency.
 
 ## Performance
 
+### Frontend
 - Optimized CSS with minimal selectors
 - Efficient JavaScript with event delegation
 - Intersection Observer for scroll animations
 - No external dependencies (pure vanilla JS)
 
+### Backend
+- Lightweight Express.js framework
+- Minimal middleware overhead
+- Scalable architecture for future expansion
+
 ---
 
-**Note**: This is a static website. For dynamic content management, consider integrating a CMS like WordPress, or use server-side includes (SSI) to automatically include header/footer components.
+**Note**: For detailed setup instructions and advanced configuration, refer to the README files in the `frontend/` and `backend/` directories.
