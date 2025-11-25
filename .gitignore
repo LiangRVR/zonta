@@ -57,12 +57,13 @@ public/build/
 public/dist/
 
 # -------------------------
-# Backend (Node / Express / Supabase)
+# Backend (Node / Express / Supabase /pnpm)
 # -------------------------
 backend/node_modules/
 backend/.env
 backend/logs/
 backend/*.log
+backend/pnpm*
 
 # -------------------------
 # VSCode / Editors
