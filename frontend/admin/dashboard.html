@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Zonta Club of Naples</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <h2>Zonta Admin</h2>
+      </div>
+
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="nav-item active">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Orders</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">🛍️</span>
+          <span>Products</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+          <span class="icon">🌐</span>
+          <span>View Site</span>
+        </a>
+      </nav>
+
+      <div class="admin-user">
+        <div class="user-info">
+          <span class="user-icon">👤</span>
+          <span class="user-email" id="user-email">Loading...</span>
+        </div>
+        <button class="btn-logout" id="logout-btn">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1>Dashboard</h1>
+        <div class="header-actions">
+          <button class="btn-refresh" id="refresh-btn">🔄 Refresh</button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading dashboard data...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="error-state" style="display: none;">
+          <p>Failed to load dashboard data. Please try again.</p>
+          <button class="btn-primary" onclick="window.location.reload()">Retry</button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" style="display: none;">
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon">💰</div>
+              <div class="kpi-content">
+                <h3>Total Revenue</h3>
+                <p class="kpi-value" id="total-revenue">$0.00</p>
+                <span class="kpi-label">All time</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon">📦</div>
+              <div class="kpi-content">
+                <h3>Total Orders</h3>
+                <p class="kpi-value" id="total-orders">0</p>
+                <span class="kpi-label">All orders</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon">⏳</div>
+              <div class="kpi-content">
+                <h3>Pending Orders</h3>
+                <p class="kpi-value" id="pending-orders">0</p>
+                <span class="kpi-label">Awaiting action</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon">📈</div>
+              <div class="kpi-content">
+                <h3>Avg Order Value</h3>
+                <p class="kpi-value" id="avg-order-value">$0.00</p>
+                <span class="kpi-label">Per order</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts/Stats Row -->
+          <div class="stats-row">
+            <!-- Orders by Status -->
+            <div class="stat-card">
+              <h3>Orders by Status</h3>
+              <div class="status-list" id="orders-by-status">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Monthly Revenue -->
+            <div class="stat-card">
+              <h3>Monthly Revenue (Current Year)</h3>
+              <div class="revenue-chart" id="monthly-revenue">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Orders -->
+          <div class="stat-card">
+            <h3>Recent Orders</h3>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-table">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/admin-auth.js"></script>
+  <script src="../js/admin-api.js"></script>
+  <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>

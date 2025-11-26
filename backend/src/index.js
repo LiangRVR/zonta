@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 3000;
 // Import routes
 const productsRoutes = require('./routes/products');
 const stripeRoutes = require('./routes/stripe');
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 
 // Middleware
 app.use(cors());
@@ -34,7 +36,24 @@ app.get('/', (req, res) => {
       productsByCategory: '/api/products/category/:category',
       createCheckout: 'POST /api/stripe/create-checkout-session',
       getSession: '/api/stripe/session/:sessionId',
-      webhook: 'POST /api/stripe/webhook'
+      webhook: 'POST /api/stripe/webhook',
+      auth: {
+        login: 'POST /api/auth/login',
+        logout: 'POST /api/auth/logout',
+        session: 'GET /api/auth/session',
+        refresh: 'POST /api/auth/refresh'
+      },
+      admin: {
+        check: 'GET /api/admin/check',
+        orders: 'GET /api/admin/orders',
+        orderById: 'GET /api/admin/orders/:id',
+        updateOrderStatus: 'PUT /api/admin/orders/:id/status',
+        stats: 'GET /api/admin/stats',
+        products: 'GET /api/admin/products',
+        createProduct: 'POST /api/admin/products',
+        updateProduct: 'PUT /api/admin/products/:id',
+        deleteProduct: 'DELETE /api/admin/products/:id'
+      }
     }
   });
 });
@@ -47,6 +66,8 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/products', productsRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.use((req, res) => {
