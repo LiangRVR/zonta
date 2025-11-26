@@ -4,6 +4,37 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Ensure admin modules are loaded
+  if (!window.adminAPI || !window.adminAuth) {
+    console.error('Admin modules not loaded');
+    document.getElementById('error-state').textContent = 'Failed to load admin modules';
+    document.getElementById('error-state').style.display = 'block';
+    document.getElementById('loading-state').style.display = 'none';
+    return;
+  }
+
+  // Check authentication
+  const user = await window.adminAuth.getCurrentUser();
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Display user email
+  const userEmailEl = document.getElementById('user-email');
+  if (userEmailEl) {
+    userEmailEl.textContent = user.email;
+  }
+
+  // Setup logout button
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await window.adminAuth.signOut();
+      window.location.href = 'login.html';
+    });
+  }
+
   await loadDashboard();
   initRefreshButton();
 });
@@ -12,14 +43,23 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Load dashboard data
  */
 async function loadDashboard() {
+  if (!window.adminAPI) {
+    console.error('adminAPI not available');
+    return;
+  }
+
   const { ui } = window.adminAPI;
 
   try {
     ui.showLoading();
     ui.hideError();
 
+    console.log('Fetching dashboard stats...');
+
     // Fetch statistics
     const data = await window.adminAPI.stats.getDashboard();
+
+    console.log('Dashboard data received:', data);
 
     if (data.success) {
       displayKPIs(data.stats);
@@ -35,7 +75,9 @@ async function loadDashboard() {
   } catch (error) {
     console.error('Error loading dashboard:', error);
     ui.hideLoading();
-    ui.showError('Failed to load dashboard data: ' + error.message);
+    const errorMessage = error.message || 'Unknown error occurred';
+    ui.showError('Failed to load dashboard data: ' + errorMessage);
+    document.getElementById('error-state').style.display = 'block';
   }
 }
 

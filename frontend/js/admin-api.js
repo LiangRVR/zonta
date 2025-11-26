@@ -3,8 +3,6 @@
  * Handles all admin API calls with authentication
  */
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
 /**
  * Make authenticated API request
  */
@@ -14,6 +12,8 @@ async function makeAuthRequest(endpoint, options = {}) {
   if (!token) {
     throw new Error('Not authenticated');
   }
+
+  const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
 
   const headers = {
     'Content-Type': 'application/json',

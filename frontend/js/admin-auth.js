@@ -4,6 +4,8 @@
  */
 
 const API_BASE_URL = 'http://localhost:3000/api';
+// Export to window for use in other modules
+window.API_BASE_URL = API_BASE_URL;
 
 // Session storage keys
 const SESSION_KEY = 'admin_session';
@@ -216,6 +218,16 @@ async function checkAdminAccess() {
     return { isAdmin: false, user: null };
   }
 }
+
+// Export functions to window object for use in other modules
+window.adminAuth = {
+  signIn,
+  signOut,
+  getCurrentUser,
+  getAuthToken,
+  checkAdminAccess,
+  refreshSession,
+};
 
 /**
  * Protect admin routes - redirect to login if not authenticated/admin
