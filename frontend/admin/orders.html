@@ -44,10 +44,11 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="admin-main" style="flex: 1; background: var(--light-gray); padding: 0; display: flex; height: 100vh; overflow: hidden;">
-
+        <!-- Main Content -->
+    <main class="admin-main" style="flex-direction: row; overflow: hidden; height: 100vh;">
+      
       <!-- Orders List Panel -->
-      <div id="orders-list-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+      <div id="orders-list-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #e0e0e0;">
         <header class="admin-header" style="flex-shrink: 0;">
           <h1>Orders Management</h1>
           <div class="header-actions">
@@ -120,7 +121,7 @@
       </div>
 
       <!-- Order Details Panel -->
-      <div id="order-details-panel" style="width: 400px; max-width: 400px; background: var(--white); box-shadow: -5px 0 20px rgba(0,0,0,0.05); padding: 24px; display: none; flex-direction: column; overflow-y: auto; flex-shrink: 0;">
+      <div id="order-details-panel" style="width: 400px; background: white; border-left: 1px solid #e0e0e0; display: none; flex-direction: column; height: 100%; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">
         <!-- Dynamically populated by JavaScript -->
       </div>
 

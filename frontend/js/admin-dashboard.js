@@ -279,50 +279,52 @@ async function showOrderDetails(orderId) {
         <button onclick="closePanel()" class="panel-close-btn" aria-label="Close">×</button>
       </div>
 
-      <div style="margin-bottom: 20px;">
-        <span class="status-badge ${formatters.statusClass(order.status)}">${formatters.statusText(order.status)}</span>
-      </div>
+      <div class="panel-body">
+        <div style="margin-bottom: 20px;">
+          <span class="status-badge ${formatters.statusClass(order.status)}">${formatters.statusText(order.status)}</span>
+        </div>
 
-      <div class="customer-profile">
-        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; margin: 0 auto 12px;">
-          ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+        <div class="customer-profile">
+          <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; margin: 0 auto 12px;">
+            ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+          </div>
+          <h3>${order.customer_name || 'N/A'}</h3>
+          <p class="customer-email">${order.customer_email || 'N/A'}</p>
+          <div class="contact-icons">
+            <button title="Email" onclick="window.location.href='mailto:${order.customer_email}'">✉️</button>
+            <button title="Phone" ${order.customer_phone ? `onclick="window.location.href='tel:${order.customer_phone}'"` : 'disabled'}>📞</button>
+            <button title="Message">💬</button>
+          </div>
         </div>
-        <h3>${order.customer_name || 'N/A'}</h3>
-        <p class="customer-email">${order.customer_email || 'N/A'}</p>
-        <div class="contact-icons">
-          <button title="Email" onclick="window.location.href='mailto:${order.customer_email}'">✉️</button>
-          <button title="Phone" ${order.customer_phone ? `onclick="window.location.href='tel:${order.customer_phone}'"` : 'disabled'}>📞</button>
-          <button title="Message">💬</button>
-        </div>
-      </div>
 
-      <div class="order-items-section" style="flex: 1; overflow-y: auto; margin-bottom: 20px;">
-        <h4>Order Items</h4>
-        ${itemsHtml}
-      </div>
+        <div class="order-items-section" style="flex: 1; overflow-y: auto; margin-bottom: 20px;">
+          <h4>Order Items</h4>
+          ${itemsHtml}
+        </div>
 
-      <div class="order-details-summary">
-        <div class="order-detail-row">
-          <span class="label">Subtotal</span>
-          <span class="value">${formatters.currency(subtotal)}</span>
+        <div class="order-details-summary">
+          <div class="order-detail-row">
+            <span class="label">Subtotal</span>
+            <span class="value">${formatters.currency(subtotal)}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="label">Shipping</span>
+            <span class="value">${formatters.currency(shipping)}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="label">Tax</span>
+            <span class="value">${formatters.currency(tax)}</span>
+          </div>
+          <div class="order-detail-row total">
+            <span class="label">Total</span>
+            <span class="value">${formatters.currency(order.total_amount)}</span>
+          </div>
         </div>
-        <div class="order-detail-row">
-          <span class="label">Shipping</span>
-          <span class="value">${formatters.currency(shipping)}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="label">Tax</span>
-          <span class="value">${formatters.currency(tax)}</span>
-        </div>
-        <div class="order-detail-row total">
-          <span class="label">Total</span>
-          <span class="value">${formatters.currency(order.total_amount)}</span>
-        </div>
-      </div>
 
-      <div class="details-actions">
-        <button class="btn-track" onclick="trackOrder(${order.id})">Track Order</button>
-        <button class="btn-refund" onclick="refundOrder(${order.id})">Refund</button>
+        <div class="details-actions">
+          <button class="btn-track" onclick="trackOrder(${order.id})">Track Order</button>
+          <button class="btn-refund" onclick="refundOrder(${order.id})">Refund</button>
+        </div>
       </div>
     `;
 

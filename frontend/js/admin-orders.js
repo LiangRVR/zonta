@@ -165,65 +165,67 @@ async function showOrderDetails(orderId) {
         <button onclick="closePanel()" class="panel-close-btn" aria-label="Close">×</button>
       </div>
 
-      <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-        <span class="status-badge ${formatters.statusClass(order.status)}">${formatters.statusText(order.status)}</span>
-        <button class="btn-small btn-secondary" onclick="toggleStatusUpdate(${order.id})">Update Status</button>
-      </div>
+      <div class="panel-body">
+        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <span class="status-badge ${formatters.statusClass(order.status)}">${formatters.statusText(order.status)}</span>
+          <button class="btn-small btn-secondary" onclick="toggleStatusUpdate(${order.id})">Update Status</button>
+        </div>
 
-      <div id="status-update-container-${order.id}" style="display: none; margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 600;">New Status:</label>
-        <select id="new-status-select-${order.id}" class="filter-select" style="width: 100%; margin-bottom: 10px;">
-          <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-          <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-          <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-          <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-          <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-          <option value="canceled" ${order.status === 'canceled' ? 'selected' : ''}>Canceled</option>
-          <option value="refunded" ${order.status === 'refunded' ? 'selected' : ''}>Refunded</option>
-        </select>
-        <button class="btn-primary" style="width: 100%;" onclick="updateOrderStatus(${order.id})">Save Status</button>
-      </div>
+        <div id="status-update-container-${order.id}" style="display: none; margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600;">New Status:</label>
+          <select id="new-status-select-${order.id}" class="filter-select" style="width: 100%; margin-bottom: 10px;">
+            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+            <option value="canceled" ${order.status === 'canceled' ? 'selected' : ''}>Canceled</option>
+            <option value="refunded" ${order.status === 'refunded' ? 'selected' : ''}>Refunded</option>
+          </select>
+          <button class="btn-primary" style="width: 100%;" onclick="updateOrderStatus(${order.id})">Save Status</button>
+        </div>
 
-      <div class="customer-profile">
-        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; margin: 0 auto 12px;">
-          ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+        <div class="customer-profile">
+          <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; margin: 0 auto 12px;">
+            ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+          </div>
+          <h3>${order.customer_name || 'N/A'}</h3>
+          <p class="customer-email">${order.customer_email || 'N/A'}</p>
+          <div class="contact-icons">
+            <button title="Email" onclick="window.location.href='mailto:${order.customer_email}'">✉️</button>
+            <button title="Phone" ${order.customer_phone ? `onclick="window.location.href='tel:${order.customer_phone}'"` : 'disabled'}>📞</button>
+            <button title="Message">💬</button>
+          </div>
         </div>
-        <h3>${order.customer_name || 'N/A'}</h3>
-        <p class="customer-email">${order.customer_email || 'N/A'}</p>
-        <div class="contact-icons">
-          <button title="Email" onclick="window.location.href='mailto:${order.customer_email}'">✉️</button>
-          <button title="Phone" ${order.customer_phone ? `onclick="window.location.href='tel:${order.customer_phone}'"` : 'disabled'}>📞</button>
-          <button title="Message">💬</button>
-        </div>
-      </div>
 
-      <div class="order-items-section" style="flex: 1; overflow-y: auto; margin-bottom: 20px;">
-        <h4>Order Items</h4>
-        ${itemsHtml}
-      </div>
+        <div class="order-items-section" style="flex: 1; overflow-y: auto; margin-bottom: 20px;">
+          <h4>Order Items</h4>
+          ${itemsHtml}
+        </div>
 
-      <div class="order-details-summary">
-        <div class="order-detail-row">
-          <span class="label">Subtotal</span>
-          <span class="value">${formatters.currency(subtotal)}</span>
+        <div class="order-details-summary">
+          <div class="order-detail-row">
+            <span class="label">Subtotal</span>
+            <span class="value">${formatters.currency(subtotal)}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="label">Shipping</span>
+            <span class="value">${formatters.currency(shipping)}</span>
+          </div>
+          <div class="order-detail-row">
+            <span class="label">Tax</span>
+            <span class="value">${formatters.currency(tax)}</span>
+          </div>
+          <div class="order-detail-row total">
+            <span class="label">Total</span>
+            <span class="value">${formatters.currency(order.total_amount)}</span>
+          </div>
         </div>
-        <div class="order-detail-row">
-          <span class="label">Shipping</span>
-          <span class="value">${formatters.currency(shipping)}</span>
-        </div>
-        <div class="order-detail-row">
-          <span class="label">Tax</span>
-          <span class="value">${formatters.currency(tax)}</span>
-        </div>
-        <div class="order-detail-row total">
-          <span class="label">Total</span>
-          <span class="value">${formatters.currency(order.total_amount)}</span>
-        </div>
-      </div>
 
-      <div class="details-actions">
-        <button class="btn-track" onclick="trackOrder(${order.id})">Track Order</button>
-        <button class="btn-refund" onclick="refundOrder(${order.id})">Refund</button>
+        <div class="details-actions">
+          <button class="btn-track" onclick="trackOrder(${order.id})">Track Order</button>
+          <button class="btn-refund" onclick="refundOrder(${order.id})">Refund</button>
+        </div>
       </div>
     `;
 
