@@ -77,9 +77,9 @@ function displayOrders(orders) {
 
     html += `
       <tr class="order-row" onclick="showOrderDetails(${order.id})" data-order-id="${order.id}">
-        <td style="padding: 16px;"><input type="checkbox" onclick="event.stopPropagation()"></td>
-        <td style="padding: 16px; font-weight: 600;">#${order.id}</td>
-        <td style="padding: 16px;">
+        <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+        <td style="font-weight: 600;">#${order.id}</td>
+        <td>
           <div style="display: flex; align-items: center; gap: 10px;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px;">
               ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
@@ -87,14 +87,14 @@ function displayOrders(orders) {
             ${order.customer_name || 'N/A'}
           </div>
         </td>
-        <td style="padding: 16px;">
+        <td>
           <span class="status-badge ${formatters.statusClass(order.status)}">
             ${formatters.statusText(order.status)}
           </span>
         </td>
-        <td style="padding: 16px; font-weight: 600;">${formatters.currency(order.total_amount)}</td>
-        <td style="padding: 16px; color: var(--gray);">${dateDisplay}</td>
-        <td style="padding: 16px; text-align: center; color: var(--gray); cursor: pointer;">•••</td>
+        <td style="font-weight: 600;">${formatters.currency(order.total_amount)}</td>
+        <td style="color: var(--gray);">${dateDisplay}</td>
+        <td style="text-align: center; color: var(--gray); cursor: pointer;">•••</td>
       </tr>
     `;
   });
