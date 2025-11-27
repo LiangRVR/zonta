@@ -65,12 +65,17 @@ function displayOrders(orders) {
   let html = '';
 
   orders.forEach(order => {
+    // Parse created_at if it's a string
+    const createdAt = typeof order.created_at === 'string'
+      ? order.created_at.replace(' ', 'T')
+      : order.created_at;
+
     html += `
       <tr>
         <td>#${order.id}</td>
         <td>${order.customer_name || 'N/A'}</td>
         <td>${order.customer_email}</td>
-        <td>${formatters.datetime(order.created_at)}</td>
+        <td>${formatters.datetime(createdAt)}</td>
         <td>${formatters.currency(order.total_amount)}</td>
         <td>
           <span class="status-badge ${formatters.statusClass(order.status)}">
@@ -114,6 +119,35 @@ function showOrderModal(order) {
   const detailsContainer = document.getElementById('order-details');
   const { formatters } = window.adminAPI;
 
+  // Parse JSON strings if needed
+  let items = order.items;
+  if (typeof items === 'string') {
+    try {
+      items = JSON.parse(items);
+    } catch (e) {
+      console.error('Failed to parse items:', e);
+      items = [];
+    }
+  }
+
+  let shippingAddress = order.shipping_address;
+  if (typeof shippingAddress === 'string') {
+    try {
+      shippingAddress = JSON.parse(shippingAddress);
+    } catch (e) {
+      console.error('Failed to parse shipping_address:', e);
+      shippingAddress = null;
+    }
+  }
+
+  // Parse dates if they're strings
+  const createdAt = typeof order.created_at === 'string'
+    ? order.created_at.replace(' ', 'T')
+    : order.created_at;
+  const paidAt = order.paid_at && typeof order.paid_at === 'string'
+    ? order.paid_at.replace(' ', 'T')
+    : order.paid_at;
+
   let html = `
     <div class="order-detail-grid">
       <div class="detail-section">
@@ -124,8 +158,8 @@ function showOrderModal(order) {
             ${formatters.statusText(order.status)}
           </span>
         </p>
-        <p><strong>Created:</strong> ${formatters.datetime(order.created_at)}</p>
-        ${order.paid_at ? `<p><strong>Paid:</strong> ${formatters.datetime(order.paid_at)}</p>` : ''}
+        <p><strong>Created:</strong> ${formatters.datetime(createdAt)}</p>
+        ${paidAt ? `<p><strong>Paid:</strong> ${formatters.datetime(paidAt)}</p>` : ''}
         <p><strong>Total Amount:</strong> ${formatters.currency(order.total_amount)}</p>
       </div>
 
@@ -136,12 +170,12 @@ function showOrderModal(order) {
       </div>
   `;
 
-  if (order.shipping_address) {
-    const addr = order.shipping_address.address || {};
+  if (shippingAddress) {
+    const addr = shippingAddress.address || {};
     html += `
       <div class="detail-section">
         <h3>Shipping Address</h3>
-        <p><strong>Name:</strong> ${order.shipping_address.name || 'N/A'}</p>
+        <p><strong>Name:</strong> ${shippingAddress.name || 'N/A'}</p>
         <p>${addr.line1 || ''}</p>
         ${addr.line2 ? `<p>${addr.line2}</p>` : ''}
         <p>${addr.city || ''}, ${addr.state || ''} ${addr.postal_code || ''}</p>
@@ -156,6 +190,7 @@ function showOrderModal(order) {
         <table class="items-table">
           <thead>
             <tr>
+              <th>Image</th>
               <th>Product</th>
               <th>Quantity</th>
               <th>Price</th>
@@ -165,11 +200,17 @@ function showOrderModal(order) {
           <tbody>
   `;
 
-  if (order.items && Array.isArray(order.items)) {
-    order.items.forEach(item => {
+  if (items && Array.isArray(items)) {
+    items.forEach(item => {
+      const imageUrl = item.image || item.image_url || '';
+      const imageHtml = imageUrl
+        ? `<img src="${imageUrl}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'" />`
+        : '📦';
+
       html += `
         <tr>
-          <td>${item.name || 'Unknown'}</td>
+          <td>${imageHtml}</td>
+          <td><strong>${item.name || 'Unknown'}</strong>${item.description ? `<br><small style="color: #666;">${item.description.substring(0, 60)}${item.description.length > 60 ? '...' : ''}</small>` : ''}</td>
           <td>${item.quantity || 1}</td>
           <td>${formatters.currency(item.price || 0)}</td>
           <td>${formatters.currency((item.price || 0) * (item.quantity || 1))}</td>

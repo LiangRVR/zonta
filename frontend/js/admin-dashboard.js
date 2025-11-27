@@ -181,11 +181,16 @@ function displayRecentOrders(orders) {
   let html = '';
 
   orders.slice(0, 10).forEach(order => {
+    // Parse created_at if it's a string
+    const createdAt = typeof order.created_at === 'string'
+      ? order.created_at.replace(' ', 'T')
+      : order.created_at;
+
     html += `
       <tr>
         <td>#${order.id}</td>
         <td>${order.customer_name || 'N/A'}</td>
-        <td>${formatters.date(order.created_at)}</td>
+        <td>${formatters.date(createdAt)}</td>
         <td>${formatters.currency(order.total_amount)}</td>
         <td>
           <span class="status-badge ${formatters.statusClass(order.status)}">

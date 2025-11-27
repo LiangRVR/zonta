@@ -70,10 +70,15 @@ function displayProducts(products) {
       ? (product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description)
       : 'N/A';
 
+    const imageUrl = product.image || product.image_url || '';
+    const imageHtml = imageUrl
+      ? `<img src="${imageUrl}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" onerror="this.outerHTML='<span style=\"font-size: 32px;\">📦</span>'" />`
+      : '<span style="font-size: 32px;">📦</span>';
+
     html += `
       <tr>
         <td>${product.id}</td>
-        <td>${product.image || product.image_url ? `<img src="${product.image_url || ''}" alt="${product.name}" class="product-thumb" onerror="this.outerHTML='${product.image || '📦'}'" />` : '📦'}</td>
+        <td>${imageHtml}</td>
         <td><strong>${product.name}</strong></td>
         <td>${truncatedDesc}</td>
         <td>${formatters.currency(product.price)}</td>
