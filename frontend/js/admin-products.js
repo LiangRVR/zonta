@@ -68,7 +68,7 @@ function displayProducts(products) {
   filteredProducts.forEach(product => {
     const imageUrl = product.image || product.image_url || '';
     const imageHtml = imageUrl
-      ? `<img src="${imageUrl}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" onerror="this.outerHTML='<span style=\"font-size: 24px;\">📦</span>'" />`
+      ? `<img src="${imageUrl}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" onerror="this.outerHTML='<span style=&quot;font-size: 24px;&quot;>📦</span>'" />`
       : '<span style="font-size: 24px;">📦</span>';
 
     html += `
