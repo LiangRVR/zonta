@@ -44,19 +44,20 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="admin-main">
-      <header class="admin-header">
-        <h1>Orders Management</h1>
-        <div class="header-actions">
-          <button class="btn-refresh" id="refresh-btn">🔄 Refresh</button>
-        </div>
-      </header>
+    <main class="admin-main" style="flex: 1; background: var(--light-gray); padding: 0; display: flex; height: 100vh; overflow: hidden;">
 
-      <div class="admin-content">
-        <!-- Filters -->
-        <div class="filters-bar">
-          <div class="filter-group">
-            <label for="status-filter">Filter by Status:</label>
+      <!-- Orders List Panel -->
+      <div id="orders-list-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        <header class="admin-header" style="flex-shrink: 0;">
+          <h1>Orders Management</h1>
+          <div class="header-actions">
+            <button class="btn-refresh" id="refresh-btn">🔄 Refresh</button>
+          </div>
+        </header>
+
+        <div class="admin-content" style="flex: 1; overflow-y: auto;">
+          <!-- Filters -->
+          <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
             <select id="status-filter" class="filter-select">
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
@@ -68,10 +69,7 @@
               <option value="refunded">Refunded</option>
               <option value="failed">Failed</option>
             </select>
-          </div>
 
-          <div class="filter-group">
-            <label for="sort-filter">Sort by:</label>
             <select id="sort-filter" class="filter-select">
               <option value="created_at-desc">Newest First</option>
               <option value="created_at-asc">Oldest First</option>
@@ -79,60 +77,58 @@
               <option value="total_amount-asc">Lowest Amount</option>
             </select>
           </div>
-        </div>
 
-        <!-- Loading State -->
-        <div id="loading-state" class="loading-state">
-          <div class="spinner"></div>
-          <p>Loading orders...</p>
-        </div>
-
-        <!-- Error State -->
-        <div id="error-state" class="error-state" style="display: none;">
-          <p>Failed to load orders. Please try again.</p>
-        </div>
-
-        <!-- Orders Table -->
-        <div id="orders-content" style="display: none;">
-          <div class="table-responsive">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Email</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="orders-table-body">
-                <!-- Dynamically populated -->
-              </tbody>
-            </table>
+          <!-- Loading State -->
+          <div id="loading-state" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading orders...</p>
           </div>
 
-          <div class="pagination" id="pagination">
-            <!-- Pagination controls will be added here -->
+          <!-- Error State -->
+          <div id="error-state" class="error-state" style="display: none;">
+            <p>Failed to load orders. Please try again.</p>
+          </div>
+
+          <!-- Orders Table -->
+          <div id="orders-content" style="display: none;">
+            <div class="admin-card">
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                  <tr>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">
+                      <input type="checkbox" id="select-all-orders">
+                    </th>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">Order ID</th>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">Customer</th>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">Status</th>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">Total</th>
+                    <th style="padding: 16px; text-align: left; color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase;">Date</th>
+                    <th style="padding: 16px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination" id="pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+              <!-- Pagination controls will be added here -->
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Order Details Panel -->
+      <div id="order-details-panel" style="width: 400px; max-width: 400px; background: var(--white); box-shadow: -5px 0 20px rgba(0,0,0,0.05); padding: 24px; display: none; flex-direction: column; overflow-y: auto; flex-shrink: 0;">
+        <!-- Dynamically populated by JavaScript -->
+      </div>
+
     </main>
   </div>
 
-  <!-- Order Detail Modal -->
-  <div id="order-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Order Details</h2>
-        <button class="modal-close" id="close-modal">&times;</button>
-      </div>
-      <div class="modal-body" id="order-details">
-        <!-- Order details will be populated here -->
-      </div>
-    </div>
-  </div>
+  <!-- Order Detail Modal (Removed) -->
+  <!-- <div id="order-modal" class="modal" style="display: none;">...</div> -->
 
   <script src="../js/admin-auth.js"></script>
   <script src="../js/admin-api.js"></script>

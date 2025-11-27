@@ -119,6 +119,11 @@
 .admin-nav {
   flex: 1;
   padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin: 0;
 }
 
 .nav-item {
@@ -208,6 +213,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* Reset global header styles */
+  position: static;
+  width: auto;
+  box-shadow: none;
+  z-index: auto;
 }
 
 .admin-header h1 {
@@ -1110,17 +1120,20 @@ button:disabled {
 }
 
 /* Order Row Styling */
-.order-row {
+.order-row,
+.product-row {
   border-bottom: 1px solid #f3f4f6;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.order-row:hover {
+.order-row:hover,
+.product-row:hover {
   background-color: #fafafa;
 }
 
-.order-row.selected {
+.order-row.selected,
+.product-row.selected {
   background-color: rgba(139, 58, 60, 0.05);
 }
 
@@ -1236,4 +1249,14 @@ button:disabled {
   .admin-table td:nth-child(7) {
     display: none;
   }
+}
+
+/* ==================== Admin Card ==================== */
+
+.admin-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  width: 100%;
 }

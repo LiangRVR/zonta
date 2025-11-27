@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
   initFilters();
   initRefreshButton();
-  initModal();
+  initPanel();
   initAddButton();
 });
 
@@ -59,28 +59,23 @@ function displayProducts(products) {
   }
 
   if (!filteredProducts || filteredProducts.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" class="no-data">No products found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data">No products found</td></tr>';
     return;
   }
 
   let html = '';
 
   filteredProducts.forEach(product => {
-    const truncatedDesc = product.description
-      ? (product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description)
-      : 'N/A';
-
     const imageUrl = product.image || product.image_url || '';
     const imageHtml = imageUrl
-      ? `<img src="${imageUrl}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" onerror="this.outerHTML='<span style=\"font-size: 32px;\">📦</span>'" />`
-      : '<span style="font-size: 32px;">📦</span>';
+      ? `<img src="${imageUrl}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" onerror="this.outerHTML='<span style=\"font-size: 24px;\">📦</span>'" />`
+      : '<span style="font-size: 24px;">📦</span>';
 
     html += `
-      <tr>
+      <tr class="product-row" data-id="${product.id}" onclick="showProductDetails(${product.id})">
         <td>${product.id}</td>
         <td>${imageHtml}</td>
         <td><strong>${product.name}</strong></td>
-        <td>${truncatedDesc}</td>
         <td>${formatters.currency(product.price)}</td>
         <td>${product.category || 'N/A'}</td>
         <td>${product.stock || 0}</td>
@@ -88,13 +83,6 @@ function displayProducts(products) {
           <span class="status-badge ${product.active ? 'status-active' : 'status-inactive'}">
             ${product.active ? 'Active' : 'Inactive'}
           </span>
-        </td>
-        <td>
-          <button class="btn-small btn-primary" onclick="editProduct(${product.id})">Edit</button>
-          <button class="btn-small ${product.active ? 'btn-warning' : 'btn-success'}" onclick="toggleProductStatus(${product.id}, ${product.active})">
-            ${product.active ? 'Deactivate' : 'Activate'}
-          </button>
-          <button class="btn-small btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
         </td>
       </tr>
     `;
@@ -104,34 +92,43 @@ function displayProducts(products) {
 }
 
 /**
- * Show add product form
+ * Show add product panel
  */
-function showAddProductForm() {
+function showAddProductPanel() {
   editingProduct = null;
 
-  document.getElementById('modal-title').textContent = 'Add Product';
+  // Clear selection
+  document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
+
+  document.getElementById('panel-title').textContent = 'Add New Product';
   document.getElementById('product-form').reset();
   document.getElementById('product-id').value = '';
+  document.getElementById('save-btn').textContent = 'Create Product';
 
-  const modal = document.getElementById('product-modal');
-  modal.style.display = 'flex';
+  // Hide edit actions (delete/deactivate)
+  document.getElementById('edit-actions').style.display = 'none';
+
+  const panel = document.getElementById('product-details-panel');
+  panel.style.display = 'flex';
 }
 
 /**
- * Edit product
+ * Show product details in panel
  */
-async function editProduct(productId) {
+function showProductDetails(productId) {
   const product = currentProducts.find(p => p.id === productId);
 
-  if (!product) {
-    window.adminAPI.ui.showToast('Product not found', 'error');
-    return;
-  }
+  if (!product) return;
 
   editingProduct = product;
 
+  // Highlight row
+  document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
+  const row = document.querySelector(`.product-row[data-id="${productId}"]`);
+  if (row) row.classList.add('selected');
+
   // Populate form
-  document.getElementById('modal-title').textContent = 'Edit Product';
+  document.getElementById('panel-title').textContent = 'Edit Product';
   document.getElementById('product-id').value = product.id;
   document.getElementById('product-name').value = product.name;
   document.getElementById('product-description').value = product.description || '';
@@ -143,8 +140,22 @@ async function editProduct(productId) {
   document.getElementById('product-display-order').value = product.display_order || 0;
   document.getElementById('product-active').checked = product.active !== false;
 
-  const modal = document.getElementById('product-modal');
-  modal.style.display = 'flex';
+  document.getElementById('save-btn').textContent = 'Save Changes';
+
+  // Show edit actions
+  const editActions = document.getElementById('edit-actions');
+  editActions.style.display = 'flex';
+  editActions.innerHTML = `
+    <button type="button" class="btn-warning" style="flex: 1;" onclick="toggleProductStatus(${product.id}, ${product.active})">
+      ${product.active ? 'Deactivate' : 'Activate'}
+    </button>
+    <button type="button" class="btn-danger" style="flex: 1;" onclick="deleteProduct(${product.id})">
+      Delete
+    </button>
+  `;
+
+  const panel = document.getElementById('product-details-panel');
+  panel.style.display = 'flex';
 }
 
 /**
@@ -162,6 +173,8 @@ async function toggleProductStatus(productId, currentStatus) {
     if (data.success) {
       window.adminAPI.ui.showToast(`Product ${action}d successfully`);
       await loadProducts();
+      // Re-open details to show updated status
+      showProductDetails(productId);
     }
   } catch (error) {
     console.error('Error toggling product status:', error);
@@ -184,6 +197,7 @@ async function deleteProduct(productId) {
 
     if (data.success) {
       window.adminAPI.ui.showToast('Product deactivated successfully');
+      closePanel();
       await loadProducts();
     }
   } catch (error) {
@@ -217,26 +231,39 @@ async function saveProduct(e) {
 
   try {
     let data;
+    let savedId;
 
     if (editingProduct) {
       // Update existing product
       data = await window.adminAPI.products.update(editingProduct.id, productData);
+      savedId = editingProduct.id;
     } else {
       // Create new product
       data = await window.adminAPI.products.create(productData);
+      savedId = data.product ? data.product.id : null;
     }
 
     if (data.success) {
       window.adminAPI.ui.showToast(`Product ${editingProduct ? 'updated' : 'created'} successfully`);
-      closeModal();
       await loadProducts();
+
+      // If we created a new product, try to find it and select it
+      if (!editingProduct && savedId) {
+         // Reloading products might take a moment, so we might need to find it in the new list
+         // For now, just closing the panel or keeping it open for the new product is fine.
+         // Let's just close it for new products to show the list
+         closePanel();
+      } else if (editingProduct) {
+         // If editing, keep the panel open and refresh details
+         showProductDetails(savedId);
+      }
     }
   } catch (error) {
     console.error('Error saving product:', error);
     window.adminAPI.ui.showToast('Failed to save product: ' + error.message, 'error');
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = 'Save Product';
+    saveBtn.textContent = editingProduct ? 'Save Changes' : 'Create Product';
   }
 }
 
@@ -277,42 +304,33 @@ function initRefreshButton() {
 function initAddButton() {
   const addBtn = document.getElementById('add-product-btn');
   if (addBtn) {
-    addBtn.addEventListener('click', showAddProductForm);
+    addBtn.addEventListener('click', showAddProductPanel);
   }
 }
 
 /**
- * Initialize modal
+ * Initialize panel
  */
-function initModal() {
-  const modal = document.getElementById('product-modal');
-  const closeBtn = document.getElementById('close-modal');
-  const cancelBtn = document.getElementById('cancel-btn');
+function initPanel() {
+  const closeBtn = document.getElementById('close-panel-btn');
   const form = document.getElementById('product-form');
 
-  closeBtn.addEventListener('click', closeModal);
-  cancelBtn.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closePanel);
   form.addEventListener('submit', saveProduct);
-
-  // Close on outside click
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
 }
 
 /**
- * Close modal
+ * Close panel
  */
-function closeModal() {
-  const modal = document.getElementById('product-modal');
-  modal.style.display = 'none';
+function closePanel() {
+  const panel = document.getElementById('product-details-panel');
+  panel.style.display = 'none';
   editingProduct = null;
+  document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
 }
 
 // Make functions available globally
-window.editProduct = editProduct;
+window.showProductDetails = showProductDetails;
 window.toggleProductStatus = toggleProductStatus;
 window.deleteProduct = deleteProduct;
-window.closeModal = closeModal;
+window.closePanel = closePanel;

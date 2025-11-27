@@ -150,7 +150,7 @@ const getOrderStats = async (req, res) => {
     // Get total orders and revenue
     const { data: orders, error: ordersError } = await supabase
       .from('orders')
-      .select('total_amount, status, created_at');
+      .select('*');
 
     if (ordersError) {
       console.error('Error fetching orders for stats:', ordersError);
