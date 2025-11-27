@@ -37,7 +37,88 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadDashboard();
   initRefreshButton();
+  initFilters();
+  initSelectAll();
 });
+
+/**
+ * Initialize select all checkbox
+ */
+function initSelectAll() {
+  const selectAllCheckbox = document.getElementById('select-all-orders');
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', (e) => {
+      const checkboxes = document.querySelectorAll('#orders-table-body input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = e.target.checked;
+      });
+    });
+  }
+}
+
+/**
+ * Initialize filter functionality
+ */
+function initFilters() {
+  const statusFilter = document.getElementById('filter-status');
+  const sortFilter = document.getElementById('filter-sort');
+
+  if (statusFilter) {
+    statusFilter.addEventListener('change', applyFilters);
+  }
+
+  if (sortFilter) {
+    sortFilter.addEventListener('change', applyFilters);
+  }
+}
+
+/**
+ * Apply filters and sorting to orders
+ */
+async function applyFilters() {
+  console.log('Applying filters...');
+  const { ui } = window.adminAPI;
+
+  try {
+    ui.showLoading();
+    const data = await window.adminAPI.stats.getDashboard();
+
+    if (data.success) {
+      let orders = data.stats.recentOrders || [];
+
+      // Apply status filter
+      const statusFilter = document.getElementById('filter-status');
+      if (statusFilter && statusFilter.value) {
+        orders = orders.filter(order => order.status === statusFilter.value);
+      }
+
+      // Apply sorting
+      const sortFilter = document.getElementById('filter-sort');
+      if (sortFilter) {
+        switch (sortFilter.value) {
+          case 'date-desc':
+            orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+          case 'date-asc':
+            orders.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            break;
+          case 'amount-desc':
+            orders.sort((a, b) => b.total_amount - a.total_amount);
+            break;
+          case 'amount-asc':
+            orders.sort((a, b) => a.total_amount - b.total_amount);
+            break;
+        }
+      }
+
+      displayRecentOrders(orders);
+      ui.hideLoading();
+    }
+  } catch (error) {
+    console.error('Error applying filters:', error);
+    ui.hideLoading();
+  }
+}
 
 /**
  * Load dashboard data
@@ -62,9 +143,6 @@ async function loadDashboard() {
     console.log('Dashboard data received:', data);
 
     if (data.success) {
-      displayKPIs(data.stats);
-      displayOrdersByStatus(data.stats.ordersByStatus);
-      displayMonthlyRevenue(data.stats.monthlyRevenue);
       displayRecentOrders(data.stats.recentOrders);
 
       ui.hideLoading();
@@ -82,129 +160,217 @@ async function loadDashboard() {
 }
 
 /**
- * Display KPI cards
- */
-function displayKPIs(stats) {
-  const { formatters } = window.adminAPI;
-
-  document.getElementById('total-revenue').textContent = formatters.currency(stats.totalRevenue);
-  document.getElementById('total-orders').textContent = stats.totalOrders.toLocaleString();
-  document.getElementById('pending-orders').textContent = (stats.ordersByStatus.pending || 0).toLocaleString();
-  document.getElementById('avg-order-value').textContent = formatters.currency(stats.averageOrderValue);
-}
-
-/**
- * Display orders by status
- */
-function displayOrdersByStatus(ordersByStatus) {
-  const container = document.getElementById('orders-by-status');
-
-  if (!ordersByStatus || Object.keys(ordersByStatus).length === 0) {
-    container.innerHTML = '<p class="no-data">No orders yet</p>';
-    return;
-  }
-
-  const statusOrder = ['pending', 'paid', 'preparing', 'shipped', 'delivered', 'canceled', 'refunded', 'failed'];
-  const { formatters } = window.adminAPI;
-
-  let html = '<ul class="status-stats">';
-
-  statusOrder.forEach(status => {
-    const count = ordersByStatus[status] || 0;
-    if (count > 0) {
-      html += `
-        <li class="status-stat-item">
-          <span class="status-badge ${formatters.statusClass(status)}">
-            ${formatters.statusText(status)}
-          </span>
-          <span class="status-count">${count}</span>
-        </li>
-      `;
-    }
-  });
-
-  html += '</ul>';
-  container.innerHTML = html;
-}
-
-/**
- * Display monthly revenue chart (simple bar chart)
- */
-function displayMonthlyRevenue(monthlyRevenue) {
-  const container = document.getElementById('monthly-revenue');
-
-  if (!monthlyRevenue || Object.keys(monthlyRevenue).length === 0) {
-    container.innerHTML = '<p class="no-data">No revenue data yet</p>';
-    return;
-  }
-
-  const { formatters } = window.adminAPI;
-
-  // Get months in order
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const maxRevenue = Math.max(...Object.values(monthlyRevenue));
-
-  let html = '<div class="revenue-bars">';
-
-  months.forEach(month => {
-    const revenue = monthlyRevenue[month] || 0;
-    if (revenue > 0) {
-      const percentage = (revenue / maxRevenue) * 100;
-      html += `
-        <div class="revenue-bar-item">
-          <div class="revenue-bar-container">
-            <div class="revenue-bar" style="height: ${percentage}%"></div>
-          </div>
-          <div class="revenue-bar-label">${month}</div>
-          <div class="revenue-bar-value">${formatters.currency(revenue)}</div>
-        </div>
-      `;
-    }
-  });
-
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-/**
  * Display recent orders table
  */
 function displayRecentOrders(orders) {
-  const tbody = document.getElementById('recent-orders-table');
+  const tbody = document.getElementById('orders-table-body');
+
+  if (!tbody) {
+    console.error('orders-table-body tbody not found');
+    return;
+  }
+
   const { formatters } = window.adminAPI;
 
   if (!orders || orders.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No orders yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="no-data" style="text-align: center; padding: 40px;">No orders yet</td></tr>';
     return;
   }
 
   let html = '';
 
-  orders.slice(0, 10).forEach(order => {
+  orders.forEach(order => {
     // Parse created_at if it's a string
     const createdAt = typeof order.created_at === 'string'
       ? order.created_at.replace(' ', 'T')
       : order.created_at;
 
+    // Format date for display
+    const dateObj = new Date(createdAt);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dateDisplay = monthNames[dateObj.getMonth()] + " " + dateObj.getDate();
+
     html += `
-      <tr>
-        <td>#${order.id}</td>
-        <td>${order.customer_name || 'N/A'}</td>
-        <td>${formatters.date(createdAt)}</td>
-        <td>${formatters.currency(order.total_amount)}</td>
-        <td>
+      <tr class="order-row" onclick="showOrderDetails(${order.id})" data-order-id="${order.id}">
+        <td style="padding: 16px;"><input type="checkbox" onclick="event.stopPropagation()"></td>
+        <td style="padding: 16px; font-weight: 600;">#${order.id}</td>
+        <td style="padding: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px;">
+              ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+            </div>
+            ${order.customer_name || 'N/A'}
+          </div>
+        </td>
+        <td style="padding: 16px;">
           <span class="status-badge ${formatters.statusClass(order.status)}">
             ${formatters.statusText(order.status)}
           </span>
         </td>
-        <td>
-          <a href="orders.html?id=${order.id}" class="btn-link">View</a>
-        </td>
+        <td style="padding: 16px; font-weight: 600;">${formatters.currency(order.total_amount)}</td>
+        <td style="padding: 16px; color: var(--gray);">${dateDisplay}</td>
+        <td style="padding: 16px; text-align: center; color: var(--gray); cursor: pointer;">•••</td>
       </tr>
     `;
   });
 
   tbody.innerHTML = html;
+}
+
+/**
+ * Show order details in the right panel
+ */
+async function showOrderDetails(orderId) {
+  console.log('Showing details for order:', orderId);
+
+  if (!window.adminAPI) {
+    console.error('adminAPI not available');
+    return;
+  }
+
+  const panel = document.getElementById('order-details-panel');
+  if (!panel) {
+    console.error('order-details-panel not found');
+    return;
+  }
+
+  try {
+    // Fetch full order details
+    const response = await window.adminAPI.orders.getById(orderId);
+
+    if (!response.success) {
+      throw new Error(response.message || 'Failed to load order details');
+    }
+
+    const order = response.order;
+    const { formatters } = window.adminAPI;
+
+    // Parse created_at
+    const createdAt = typeof order.created_at === 'string'
+      ? order.created_at.replace(' ', 'T')
+      : order.created_at;
+
+    // Build order items HTML
+    let itemsHtml = '';
+    if (order.items && order.items.length > 0) {
+      itemsHtml = order.items.map(item => `
+        <div class="order-item">
+          <img src="${item.image_url || '../images/placeholder-product.png'}" alt="${item.name}" onerror="this.src='../images/placeholder-product.png'">
+          <div class="order-item-info">
+            <p class="item-name">${item.name}</p>
+            <p class="item-quantity">Qty: ${item.quantity}</p>
+            <p class="item-price">${formatters.currency(item.price)}</p>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      itemsHtml = '<p style="color: var(--gray); font-style: italic;">No items found</p>';
+    }
+
+    // Calculate subtotal
+    const subtotal = order.items ? order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) : 0;
+    const shipping = order.shipping_amount || 0;
+    const tax = order.tax_amount || 0;
+
+    // Build the panel HTML
+    panel.innerHTML = `
+      <div class="panel-header">
+        <h2>Order #${order.id}</h2>
+        <button onclick="closePanel()" class="panel-close-btn" aria-label="Close">×</button>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <span class="status-badge ${formatters.statusClass(order.status)}">${formatters.statusText(order.status)}</span>
+      </div>
+
+      <div class="customer-profile">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; margin: 0 auto 12px;">
+          ${(order.customer_name || 'N/A').charAt(0).toUpperCase()}
+        </div>
+        <h3>${order.customer_name || 'N/A'}</h3>
+        <p class="customer-email">${order.customer_email || 'N/A'}</p>
+        <div class="contact-icons">
+          <button title="Email" onclick="window.location.href='mailto:${order.customer_email}'">✉️</button>
+          <button title="Phone" ${order.customer_phone ? `onclick="window.location.href='tel:${order.customer_phone}'"` : 'disabled'}>📞</button>
+          <button title="Message">💬</button>
+        </div>
+      </div>
+
+      <div class="order-items-section" style="flex: 1; overflow-y: auto; margin-bottom: 20px;">
+        <h4>Order Items</h4>
+        ${itemsHtml}
+      </div>
+
+      <div class="order-details-summary">
+        <div class="order-detail-row">
+          <span class="label">Subtotal</span>
+          <span class="value">${formatters.currency(subtotal)}</span>
+        </div>
+        <div class="order-detail-row">
+          <span class="label">Shipping</span>
+          <span class="value">${formatters.currency(shipping)}</span>
+        </div>
+        <div class="order-detail-row">
+          <span class="label">Tax</span>
+          <span class="value">${formatters.currency(tax)}</span>
+        </div>
+        <div class="order-detail-row total">
+          <span class="label">Total</span>
+          <span class="value">${formatters.currency(order.total_amount)}</span>
+        </div>
+      </div>
+
+      <div class="details-actions">
+        <button class="btn-track" onclick="trackOrder(${order.id})">Track Order</button>
+        <button class="btn-refund" onclick="refundOrder(${order.id})">Refund</button>
+      </div>
+    `;
+
+    // Show the panel
+    panel.style.display = 'flex';
+
+    // Highlight the selected row
+    document.querySelectorAll('.order-row').forEach(row => row.classList.remove('selected'));
+    const selectedRow = document.querySelector(`.order-row[data-order-id="${orderId}"]`);
+    if (selectedRow) {
+      selectedRow.classList.add('selected');
+    }
+
+  } catch (error) {
+    console.error('Error loading order details:', error);
+    window.adminAPI.ui.showToast('Failed to load order details: ' + error.message, 'error');
+  }
+}
+
+/**
+ * Close the order details panel
+ */
+function closePanel() {
+  const panel = document.getElementById('order-details-panel');
+  if (panel) {
+    panel.style.display = 'none';
+  }
+
+  // Remove selection from all rows
+  document.querySelectorAll('.order-row').forEach(row => row.classList.remove('selected'));
+}
+
+/**
+ * Track order (placeholder function)
+ */
+function trackOrder(orderId) {
+  console.log('Track order:', orderId);
+  window.adminAPI.ui.showToast('Tracking feature coming soon!', 'info');
+}
+
+/**
+ * Refund order (placeholder function)
+ */
+function refundOrder(orderId) {
+  console.log('Refund order:', orderId);
+  if (confirm('Are you sure you want to refund this order?')) {
+    window.adminAPI.ui.showToast('Refund feature coming soon!', 'info');
+  }
 }
 
 /**

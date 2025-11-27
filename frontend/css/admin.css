@@ -96,7 +96,7 @@
 
 .admin-sidebar {
   width: 260px;
-  background: #2c3e50;
+  background: var(--primary-color); /* Maroon */
   color: white;
   display: flex;
   flex-direction: column;
@@ -125,10 +125,11 @@
   display: flex;
   align-items: center;
   padding: 14px 20px;
+  margin: 4px 12px;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   transition: all 0.3s;
-  border-left: 4px solid transparent;
+  border-radius: 12px;
 }
 
 .nav-item:hover {
@@ -137,9 +138,10 @@
 }
 
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.15);
-  border-left-color: #667eea;
-  color: white;
+  background-color: var(--white);
+  color: var(--primary-color); /* Maroon text */
+  border-radius: 12px;
+  font-weight: 700;
 }
 
 .nav-item .icon {
@@ -147,6 +149,10 @@
   margin-right: 12px;
   width: 24px;
   text-align: center;
+}
+
+.nav-item.active .icon {
+  color: var(--primary-color);
 }
 
 .admin-user {
@@ -532,28 +538,28 @@ button:disabled {
 }
 
 .status-pending {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(107, 114, 128, 0.15);
+  color: var(--gray);
 }
 
 .status-paid {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: rgba(230, 161, 23, 0.15); /* Low opacity gold */
+  color: var(--secondary-color); /* Solid gold text */
 }
 
 .status-preparing {
-  background: #cce5ff;
-  color: #004085;
+  background: rgba(139, 58, 60, 0.15); /* Low opacity maroon */
+  color: var(--primary-color); /* Solid maroon text */
 }
 
 .status-shipped {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(0, 188, 212, 0.15); /* Low opacity cyan */
+  color: var(--accent-color); /* Solid cyan text */
 }
 
 .status-delivered {
-  background: #c3e6cb;
-  color: #155724;
+  background: rgba(0, 188, 212, 0.25);
+  color: #008ca0;
 }
 
 .status-canceled {
@@ -572,8 +578,8 @@ button:disabled {
 }
 
 .status-active {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(0, 188, 212, 0.15);
+  color: var(--accent-color);
 }
 
 .status-inactive {
@@ -607,17 +613,21 @@ button:disabled {
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: var(--white);
+  color: var(--gray);
+  font-family: inherit;
   font-size: 14px;
-  background: white;
   cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary-color);
 }
 
 /* ==================== Modal ==================== */
@@ -859,13 +869,268 @@ button:disabled {
   border: 1px solid #c3e6cb;
 }
 
+/* ==================== Order Details Panel ==================== */
+
+/* Customer Profile Section */
+.customer-profile {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.customer-profile img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  object-fit: cover;
+  border: 3px solid var(--light-gray);
+}
+
+.customer-profile h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.customer-profile .customer-email {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+.contact-icons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.contact-icons button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  color: var(--gray);
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.contact-icons button:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Order Items List */
+.order-items-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--gray);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.order-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+.order-item-info {
+  flex: 1;
+}
+
+.order-item-info .item-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2c3e50;
+  line-height: 1.4;
+}
+
+.order-item-info .item-quantity {
+  margin: 4px 0 0 0;
+  color: var(--gray);
+  font-size: 12px;
+}
+
+.order-item-info .item-price {
+  margin: 4px 0 0 0;
+  color: var(--secondary-color);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Order Details Summary */
+.order-details-summary {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.order-detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.order-detail-row .label {
+  color: var(--gray);
+}
+
+.order-detail-row .value {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.order-detail-row.total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.order-detail-row.total .label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.order-detail-row.total .value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Action Buttons at Bottom */
+.details-actions {
+  margin-top: auto;
+  padding-top: 24px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-track {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background-color: var(--primary-color); /* Maroon */
+  color: var(--white);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.btn-track:hover {
+  background-color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 58, 60, 0.3);
+}
+
+.btn-refund {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--secondary-color); /* Gold border */
+  background-color: var(--white);
+  color: var(--secondary-color); /* Gold text */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.btn-refund:hover {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 161, 23, 0.3);
+}
+
+.panel-close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.panel-close-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.panel-header h2 {
+  font-size: 20px;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+/* Order Row Styling */
+.order-row {
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.order-row:hover {
+  background-color: #fafafa;
+}
+
+.order-row.selected {
+  background-color: rgba(139, 58, 60, 0.05);
+}
+
 /* ==================== Toast Notifications ==================== */
 
 .toast {
   position: fixed;
   bottom: -100px;
   right: 20px;
-  background: #2c3e50;
+  background: var(--primary-color);
   color: white;
   padding: 15px 20px;
   border-radius: 8px;
@@ -902,6 +1167,11 @@ button:disabled {
   .stats-row {
     grid-template-columns: 1fr;
   }
+
+  #order-details-panel {
+    width: 350px;
+    max-width: 350px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -917,6 +1187,23 @@ button:disabled {
 
   .admin-main {
     margin-left: 0;
+    flex-direction: column !important;
+  }
+
+  #orders-list-panel {
+    flex: 1 !important;
+  }
+
+  #order-details-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    border-radius: 0;
   }
 
   .admin-header {
@@ -940,5 +1227,13 @@ button:disabled {
   .admin-table th,
   .admin-table td {
     padding: 10px;
+  }
+
+  /* Hide some columns on mobile */
+  .admin-table th:nth-child(1),
+  .admin-table td:nth-child(1),
+  .admin-table th:nth-child(7),
+  .admin-table td:nth-child(7) {
+    display: none;
   }
 }
