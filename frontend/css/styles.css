@@ -1975,14 +1975,25 @@ footer {
   scroll-snap-align: start;
 }
 
-/* Wrap each card image in a container */
 .card-container {
   position: relative;
   display: inline-block;
   padding-top: 10px;
+  cursor: pointer; /* make the whole card clickable */
 }
 
-/* Overlay circle with plus icon */
+.card-container img {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.card-container:hover img {
+  transform: scale(1.05);
+}
+
 .card-overlay {
   position: absolute;
   top: 50%;
@@ -1990,32 +2001,20 @@ footer {
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(230, 161, 23, 0.8);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
-  cursor: pointer;
   font-size: 24px;
   color: white;
 }
-
-/* Only show overlay and scale when hovering the image itself */
-.card-container img:hover + .card-overlay {
+.card-container:hover .card-overlay {
   opacity: 1;
 }
 
-.card-container img:hover {
-  transform: scale(1.05);
-}
-
-
-/* Slight zoom effect on hover */
-.card-container img {
-  transition: transform 0.3s ease;
-}
 /* Fullscreen modal */
 .modal {
   position: fixed;
@@ -2074,3 +2073,5 @@ footer {
     display: none; /* hide arrows on mobile; swipe works */
   }
 }
+
+/*membership signup */
