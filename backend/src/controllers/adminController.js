@@ -688,6 +688,77 @@ function escapeCSVField(value) {
 }
 
 /**
+ * Helper: Format shipping object into a single CSV-safe string
+ * Converts: { name: "...", address: { line1, line2, city, state, postal_code, country } }
+ * Into: "Name, Line1, Line2, City, State PostalCode, Country"
+ */
+function formatShippingAddress(shipping) {
+  if (!shipping) return '';
+
+  try {
+    // Handle if shipping is a string (JSON)
+    const s = typeof shipping === 'string' ? JSON.parse(shipping) : shipping;
+
+    if (!s || !s.address) return s.name || '';
+
+    const addr = s.address;
+    // Format: Name, Line1, Line2 (empty if null), City, State PostalCode, Country
+    const parts = [
+      s.name || '',
+      addr.line1 || '',
+      addr.line2 || '',  // Keep empty string if null (will show as ", ,")
+      addr.city || '',
+      `${addr.state || ''} ${addr.postal_code || ''}`.trim(),
+      addr.country || ''
+    ];
+
+    return parts.join(', ');
+  } catch (e) {
+    // If parsing fails, return empty string
+    console.error('Error parsing shipping address:', e);
+    return '';
+  }
+}
+
+/**
+ * Helper: Format items array into a CSV-safe summary string
+ * Converts: [{ name, quantity, price }, ...]
+ * Into: "Item1 (qty: 2, $30); Item2 (qty: 1, $10)"
+ */
+function formatItemsSummary(items) {
+  if (!items) return '';
+
+  try {
+    // Handle if items is a string (JSON)
+    const itemsArray = typeof items === 'string' ? JSON.parse(items) : items;
+
+    if (!Array.isArray(itemsArray) || itemsArray.length === 0) return '';
+
+    return itemsArray
+      .map(item => `${item.name || 'Unknown Item'} (qty: ${item.quantity || 1}, $${item.price || 0})`)
+      .join('; ');
+  } catch (e) {
+    console.error('Error parsing items:', e);
+    return 'Unable to parse items';
+  }
+}
+
+/**
+ * Helper: Normalize order for CSV export
+ * Converts nested objects and arrays into flat CSV-friendly strings
+ */
+function normalizeOrderForCSV(order) {
+  // The shipping data might be in 'shipping' or 'shipping_address' column
+  const shippingData = order.shipping || order.shipping_address;
+
+  return {
+    ...order,
+    shipping_address_formatted: formatShippingAddress(shippingData),
+    items_summary: formatItemsSummary(order.items)
+  };
+}
+
+/**
  * Export orders as CSV
  */
 const exportOrdersCSV = async (req, res) => {
@@ -724,19 +795,17 @@ const exportOrdersCSV = async (req, res) => {
       });
     }
 
+    // Normalize orders for CSV (convert nested objects/arrays to strings)
+    const normalizedOrders = orders.map(normalizeOrderForCSV);
+
     // Define CSV columns
     const headers = [
       'Order ID',
       'Customer Name',
       'Customer Email',
-      'Customer Phone',
       'Status',
       'Total Amount',
       'Shipping Address',
-      'City',
-      'State',
-      'Zip Code',
-      'Country',
       'Items',
       'Created At',
       'Paid At',
@@ -744,31 +813,15 @@ const exportOrdersCSV = async (req, res) => {
     ];
 
     // Build CSV rows
-    const rows = orders.map(order => {
-      // Parse items to get a summary
-      let itemsSummary = '';
-      if (order.items) {
-        try {
-          const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-          itemsSummary = items.map(item => `${item.name} x${item.quantity}`).join('; ');
-        } catch (e) {
-          itemsSummary = 'Unable to parse items';
-        }
-      }
-
+    const rows = normalizedOrders.map(order => {
       return [
         order.id,
         order.customer_name || '',
         order.customer_email || '',
-        order.customer_phone || '',
         order.status || '',
         order.total_amount || 0,
-        order.shipping_address || '',
-        order.shipping_city || '',
-        order.shipping_state || '',
-        order.shipping_zip || '',
-        order.shipping_country || '',
-        itemsSummary,
+        order.shipping_address_formatted,
+        order.items_summary,
         order.created_at || '',
         order.paid_at || '',
         order.stripe_session_id || ''
