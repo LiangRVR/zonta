@@ -58,7 +58,7 @@
 
         <div class="admin-content" style="flex: 1; overflow-y: auto;">
           <!-- Filters -->
-          <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
             <select id="status-filter" class="filter-select">
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
@@ -77,6 +77,21 @@
               <option value="total_amount-desc">Highest Amount</option>
               <option value="total_amount-asc">Lowest Amount</option>
             </select>
+          </div>
+
+          <!-- CSV Export Section -->
+          <div class="export-section" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="export-from-date" style="font-weight: 500; color: #555;">From:</label>
+              <input type="date" id="export-from-date" class="filter-select" style="padding: 8px 12px;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="export-to-date" style="font-weight: 500; color: #555;">To:</label>
+              <input type="date" id="export-to-date" class="filter-select" style="padding: 8px 12px;">
+            </div>
+            <button id="export-csv-btn" class="btn-secondary" style="display: flex; align-items: center; gap: 6px;">
+              <span>📥</span> Download CSV
+            </button>
           </div>
 
           <!-- Loading State -->

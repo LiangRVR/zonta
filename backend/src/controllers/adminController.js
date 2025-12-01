@@ -672,6 +672,128 @@ const getOverview = async (req, res) => {
   }
 };
 
+/**
+ * Helper: Escape CSV field value
+ */
+function escapeCSVField(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  const str = String(value);
+  // If the value contains comma, quote, or newline, wrap in quotes and escape internal quotes
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+/**
+ * Export orders as CSV
+ */
+const exportOrdersCSV = async (req, res) => {
+  try {
+    const { from, to } = req.query;
+
+    let query = supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    // Apply date filters using created_at column
+    if (from) {
+      // Start of the 'from' day
+      const fromDate = new Date(from);
+      fromDate.setHours(0, 0, 0, 0);
+      query = query.gte('created_at', fromDate.toISOString());
+    }
+
+    if (to) {
+      // End of the 'to' day
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      query = query.lte('created_at', toDate.toISOString());
+    }
+
+    const { data: orders, error } = await query;
+
+    if (error) {
+      console.error('Error fetching orders for export:', error);
+      return res.status(500).json({
+        error: 'Failed to fetch orders',
+        details: error.message
+      });
+    }
+
+    // Define CSV columns
+    const headers = [
+      'Order ID',
+      'Customer Name',
+      'Customer Email',
+      'Customer Phone',
+      'Status',
+      'Total Amount',
+      'Shipping Address',
+      'City',
+      'State',
+      'Zip Code',
+      'Country',
+      'Items',
+      'Created At',
+      'Paid At',
+      'Stripe Session ID'
+    ];
+
+    // Build CSV rows
+    const rows = orders.map(order => {
+      // Parse items to get a summary
+      let itemsSummary = '';
+      if (order.items) {
+        try {
+          const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+          itemsSummary = items.map(item => `${item.name} x${item.quantity}`).join('; ');
+        } catch (e) {
+          itemsSummary = 'Unable to parse items';
+        }
+      }
+
+      return [
+        order.id,
+        order.customer_name || '',
+        order.customer_email || '',
+        order.customer_phone || '',
+        order.status || '',
+        order.total_amount || 0,
+        order.shipping_address || '',
+        order.shipping_city || '',
+        order.shipping_state || '',
+        order.shipping_zip || '',
+        order.shipping_country || '',
+        itemsSummary,
+        order.created_at || '',
+        order.paid_at || '',
+        order.stripe_session_id || ''
+      ].map(escapeCSVField).join(',');
+    });
+
+    // Combine header and rows
+    const csvContent = [headers.join(','), ...rows].join('\n');
+
+    // Set response headers for file download
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="orders.csv"');
+
+    // Send the CSV content
+    res.send(csvContent);
+
+  } catch (err) {
+    console.error('Unexpected error exporting orders:', err);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: err.message
+    });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getOrderById,
@@ -683,4 +805,5 @@ module.exports = {
   deleteProduct,
   checkAdminStatus,
   getOverview,
+  exportOrdersCSV,
 };

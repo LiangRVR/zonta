@@ -160,7 +160,7 @@ function showProductDetails(productId) {
     <button type="button" class="btn-warning" style="flex: 1;" onclick="toggleProductStatus(${product.id}, ${product.active})">
       ${product.active ? 'Deactivate' : 'Activate'}
     </button>
-    <button type="button" class="btn-danger" style="flex: 1;" onclick="deleteProduct(${product.id})">
+    <button type="button" class="btn-danger" style="flex: 1;" onclick="deleteProductPermanently(${product.id})">
       Delete
     </button>
   `;
@@ -260,20 +260,20 @@ async function toggleProductStatus(productId, currentStatus) {
 }
 
 /**
- * Delete product
+ * Delete product permanently (including image from storage)
  */
-async function deleteProduct(productId) {
+async function deleteProductPermanently(productId) {
   const confirmed = await window.adminAPI.ui.confirm(
-    'Are you sure you want to delete this product? This will deactivate it (soft delete).\n\nClick OK to deactivate, or Cancel to abort.'
+    'Are you sure you want to PERMANENTLY delete this product?\n\nThis will remove the product and its image from storage. This action cannot be undone!'
   );
 
   if (!confirmed) return;
 
   try {
-    const data = await window.adminAPI.products.delete(productId, false);
+    const data = await window.adminAPI.products.delete(productId, true);
 
     if (data.success) {
-      window.adminAPI.ui.showToast('Product deactivated successfully');
+      window.adminAPI.ui.showToast('Product deleted permanently');
       closePanel();
       await loadProducts();
     }
@@ -478,6 +478,6 @@ function initImageUpload() {
 window.showProductDetails = showProductDetails;
 window.showAddProductPanel = showAddProductPanel;
 window.toggleProductStatus = toggleProductStatus;
-window.deleteProduct = deleteProduct;
+window.deleteProductPermanently = deleteProductPermanently;
 window.closePanel = closePanel;
 window.removeCurrentImage = removeCurrentImage;

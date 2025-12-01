@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initFilters();
   initRefreshButton();
   initSelectAll();
+  initExportCSV();
 });
 
 /**
@@ -347,6 +348,85 @@ function initSelectAll() {
       checkboxes.forEach(checkbox => {
         checkbox.checked = e.target.checked;
       });
+    });
+  }
+}
+
+/**
+ * Initialize CSV export functionality
+ */
+function initExportCSV() {
+  const exportBtn = document.getElementById('export-csv-btn');
+  const fromDateInput = document.getElementById('export-from-date');
+  const toDateInput = document.getElementById('export-to-date');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', async () => {
+      const fromDate = fromDateInput ? fromDateInput.value : '';
+      const toDate = toDateInput ? toDateInput.value : '';
+
+      // Validate date range
+      if (fromDate && toDate && fromDate > toDate) {
+        window.adminAPI.ui.showToast('Start date cannot be after end date', 'error');
+        return;
+      }
+
+      // Build export URL with query params
+      const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
+      let exportUrl = `${API_BASE_URL}/admin/orders/export`;
+
+      const params = new URLSearchParams();
+      if (fromDate) params.append('from', fromDate);
+      if (toDate) params.append('to', toDate);
+
+      if (params.toString()) {
+        exportUrl += '?' + params.toString();
+      }
+
+      try {
+        // Get the auth token
+        const token = await window.adminAuth.getAuthToken();
+        if (!token) {
+          window.adminAPI.ui.showToast('Not authenticated', 'error');
+          return;
+        }
+
+        // Show loading state
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = '<span>⏳</span> Downloading...';
+
+        // Fetch the CSV with auth header
+        const response = await fetch(exportUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to download CSV');
+        }
+
+        // Get the blob and create download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'orders.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+        window.adminAPI.ui.showToast('Orders exported successfully');
+
+      } catch (error) {
+        console.error('Error exporting orders:', error);
+        window.adminAPI.ui.showToast('Failed to export orders: ' + error.message, 'error');
+      } finally {
+        // Reset button state
+        exportBtn.disabled = false;
+        exportBtn.innerHTML = '<span>📥</span> Download CSV';
+      }
     });
   }
 }

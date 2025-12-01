@@ -13,6 +13,7 @@ const {
   deleteProduct,
   checkAdminStatus,
   getOverview,
+  exportOrdersCSV,
 } = require('../controllers/adminController');
 
 // Configure multer for memory storage (files stored in buffer)
@@ -40,6 +41,7 @@ router.get('/overview', requireAuth, requireAdmin, getOverview);
 
 // Order management routes
 router.get('/orders', requireAuth, requireAdmin, getAllOrders);
+router.get('/orders/export', requireAuth, requireAdmin, exportOrdersCSV);
 router.get('/orders/:id', requireAuth, requireAdmin, getOrderById);
 router.put('/orders/:id/status', requireAuth, requireAdmin, updateOrderStatus);
 
