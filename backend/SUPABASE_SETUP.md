@@ -139,10 +139,92 @@ You should see your products returned as JSON.
 4. **Use service role key only on server** - Never expose it to the frontend
 5. **Implement authentication** - For admin operations like adding/editing products
 
+## Database Schema Reference
+
+### Complete Schema
+
+```sql
+-- Products table
+CREATE TABLE public.products (
+  id bigint NOT NULL DEFAULT nextval('products_id_seq'::regclass),
+  name text NOT NULL,
+  description text,
+  price numeric NOT NULL,
+  image text,
+  active boolean DEFAULT true,
+  display_order integer DEFAULT 0,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT products_pkey PRIMARY KEY (id)
+);
+
+-- Orders table
+CREATE TABLE public.orders (
+  id bigint NOT NULL DEFAULT nextval('orders_id_seq'::regclass),
+  customer_email text NOT NULL,
+  customer_name text,
+  items jsonb NOT NULL,
+  total_amount numeric NOT NULL,
+  status text DEFAULT 'pending'::text,
+  stripe_session_id text UNIQUE,
+  stripe_payment_intent text,
+  shipping_address jsonb,
+  created_at timestamp with time zone DEFAULT now(),
+  paid_at timestamp with time zone,
+  CONSTRAINT orders_pkey PRIMARY KEY (id)
+);
+
+-- Roles table (for admin access control)
+CREATE TABLE public.roles (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  role_name text,
+  CONSTRAINT roles_pkey PRIMARY KEY (id)
+);
+
+-- Insert default roles
+INSERT INTO public.roles (role_name) VALUES ('admin'), ('user');
+
+-- User roles mapping table
+CREATE TABLE public.user_roles (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_id uuid,
+  role_id bigint,
+  CONSTRAINT user_roles_pkey PRIMARY KEY (id),
+  CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
+  CONSTRAINT user_roles_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id)
+);
+```
+
+### Relationships
+
+- **user_roles.user_id** → **auth.users.id** (Supabase authentication table)
+- **user_roles.role_id** → **roles.id**
+
+### Querying User Roles
+
+To get a user's role name:
+```sql
+SELECT roles.role_name
+FROM user_roles
+JOIN roles ON user_roles.role_id = roles.id
+WHERE user_roles.user_id = '<user_uuid>';
+```
+
+Or using Supabase's relationship syntax:
+```javascript
+const { data } = await supabase
+  .from('user_roles')
+  .select('roles(role_name)')
+  .eq('user_id', userId)
+  .single();
+
+// Access role name: data.roles.role_name
+```
+
 ## Next Steps
 
-- Set up user authentication for admin users
-- Create an admin dashboard to manage products
+- See [ADMIN_QUICKSTART.md](../ADMIN_QUICKSTART.md) for setting up the admin dashboard
 - Add product image upload functionality
 - Implement inventory management
 - Add product search and filtering

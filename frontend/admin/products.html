@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products Management - Zonta Admin</title>
+  <link rel="icon" type="image/png" href="../images/zontalogo_gold.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <a href="dashboard.html" class="admin-logo-link">
+          <img src="../images/zontalogo_gold.png" alt="Zonta Club of Naples" class="admin-logo">
+        </a>
+        <span class="admin-title">Admin Panel</span>
+      </div>
+
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="nav-item">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Orders</span>
+        </a>
+        <a href="products.html" class="nav-item active">
+          <span class="icon">🛍️</span>
+          <span>Products</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+          <span class="icon">🌐</span>
+          <span>View Site</span>
+        </a>
+      </nav>
+
+      <div class="admin-user">
+        <div class="user-info">
+          <span class="user-icon">👤</span>
+          <span class="user-email" id="user-email">Loading...</span>
+        </div>
+        <button class="btn-logout" id="logout-btn">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" style="flex-direction: row; overflow: hidden; height: 100vh;">
+
+      <!-- Left Panel: Product List -->
+      <div id="products-list-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #e0e0e0;">
+        <header class="admin-header">
+          <h1>Products Management</h1>
+          <div class="header-actions">
+            <button class="btn-primary" id="add-product-btn">+ Add Product</button>
+            <button class="btn-refresh" id="refresh-btn">🔄 Refresh</button>
+          </div>
+        </header>
+
+        <div class="admin-content" style="overflow-y: auto; padding: 20px;">
+          <!-- Filters -->
+          <div class="filters-bar">
+            <div class="filter-group">
+              <label for="active-filter">Show:</label>
+              <select id="active-filter" class="filter-select">
+                <option value="all">All Products</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Inactive Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="loading-state" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
+          </div>
+
+          <!-- Error State -->
+          <div id="error-state" class="error-state" style="display: none;">
+            <p>Failed to load products. Please try again.</p>
+          </div>
+
+          <!-- Products Table -->
+          <div id="products-content" style="display: none;">
+            <div class="admin-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Order</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-table-body">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Product Details/Form -->
+      <div id="product-details-panel" class="order-details-panel" style="width: 400px; background: white; border-left: 1px solid #e0e0e0; display: none; flex-direction: column; height: 100%; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">
+        <div class="panel-header" style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+          <h2 id="panel-title" style="margin: 0; font-size: 20px; color: #2c3e50;">Product Details</h2>
+          <button class="panel-close-btn" id="close-panel-btn">&times;</button>
+        </div>
+
+        <div class="panel-body" style="padding: 20px;">
+          <form id="product-form" class="admin-form">
+            <input type="hidden" id="product-id" name="id">
+
+            <!-- Image Upload Section -->
+            <div class="form-group">
+              <label>Product Image</label>
+              <div class="image-upload-container" id="image-upload-container">
+                <div class="image-preview" id="image-preview">
+                  <span class="placeholder-icon">📷</span>
+                  <span class="placeholder-text">No image selected</span>
+                </div>
+                <div class="image-upload-actions">
+                  <label for="product-image-file" class="btn-secondary" style="cursor: pointer; display: inline-block; text-align: center;">
+                    Choose Image
+                  </label>
+                  <input type="file" id="product-image-file" name="image" accept="image/*" style="display: none;">
+                  <button type="button" id="remove-image-btn" class="btn-link" style="display: none; color: #dc3545;">
+                    Remove
+                  </button>
+                </div>
+                <p class="form-hint">Max 5MB. Supported: JPG, PNG, GIF, WebP</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="product-name">Product Name *</label>
+              <input type="text" id="product-name" name="name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="product-description">Description</label>
+              <textarea id="product-description" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="product-price">Price (USD) *</label>
+                <input type="number" id="product-price" name="price" step="0.01" min="0" required>
+              </div>
+
+              <div class="form-group">
+                <label for="product-display-order">Display Order</label>
+                <input type="number" id="product-display-order" name="display_order" value="0">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="product-active" name="active" checked>
+                Active (visible in shop)
+              </label>
+            </div>
+
+            <div class="form-actions" style="flex-direction: column; gap: 10px;">
+              <button type="submit" class="btn-primary" id="save-btn" style="width: 100%;">Save Product</button>
+              <div id="edit-actions" style="display: none; width: 100%; gap: 10px;">
+                 <!-- Populated dynamically for existing products -->
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/admin-auth.js"></script>
+  <script src="../js/admin-api.js"></script>
+  <script src="../js/admin-products.js"></script>
+</body>
+</html>

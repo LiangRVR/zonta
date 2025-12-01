@@ -8,13 +8,24 @@ A full-stack web application for the Zonta Club of Naples. The project consists 
 zonta/
 ├── frontend/               # Frontend application
 │   ├── index.html         # Homepage
+│   ├── admin/             # Admin dashboard (NEW)
+│   │   ├── login.html     # Admin login
+│   │   ├── dashboard.html # Main dashboard
+│   │   ├── orders.html    # Orders management
+│   │   └── products.html  # Products management
 │   ├── css/               # Stylesheets
 │   │   ├── styles.css     # Main stylesheet
-│   │   └── shop.css       # Shop page styles
+│   │   ├── shop.css       # Shop page styles
+│   │   └── admin.css      # Admin dashboard styles (NEW)
 │   ├── js/                # JavaScript files
 │   │   ├── main.js        # Main JavaScript file
 │   │   ├── nav-footer-share.js  # Shared header/footer management
-│   │   └── shop.js        # Shop page functionality
+│   │   ├── shop.js        # Shop page functionality
+│   │   ├── admin-auth.js  # Admin authentication (NEW)
+│   │   ├── admin-api.js   # Admin API client (NEW)
+│   │   ├── admin-dashboard.js  # Dashboard logic (NEW)
+│   │   ├── admin-orders.js     # Orders page logic (NEW)
+│   │   └── admin-products.js   # Products page logic (NEW)
 │   ├── pages/             # HTML pages
 │   │   ├── about.html
 │   │   ├── service.html
@@ -30,16 +41,25 @@ zonta/
 │   └── README.md          # Frontend documentation
 │
 ├── backend/               # Backend API
+│   ├── database/                  # Database schemas (NEW)
+│   │   └── admin-schema.sql       # Admin tables and functions
 │   ├── src/
 │   │   ├── index.js               # Express server entry point
 │   │   ├── supabaseClient.js      # Supabase client configuration
 │   │   ├── controllers/           # Business logic
-│   │   │   └── productsController.js
+│   │   │   ├── productsController.js
+│   │   │   ├── stripeController.js
+│   │   │   └── adminController.js # Admin operations (NEW)
+│   │   ├── middleware/            # Middleware (NEW)
+│   │   │   └── authMiddleware.js  # Auth & admin verification
 │   │   └── routes/                # API routes
-│   │       └── products.js
+│   │       ├── products.js
+│   │       ├── stripe.js
+│   │       └── admin.js           # Admin routes (NEW)
 │   ├── config/                    # Configuration files
 │   ├── package.json               # Dependencies
 │   ├── .env                       # Environment variables (not in git)
+│   ├── .env.example               # Environment template (NEW)
 │   ├── API.md                     # API documentation
 │   └── README.md                  # Backend documentation
 │
@@ -47,6 +67,16 @@ zonta/
 ```
 
 ## Features
+
+### Admin Dashboard 🆕
+- **Secure Authentication**: Role-based access control with Supabase Auth
+- **Dashboard Overview**: KPIs, order statistics, revenue analytics
+- **Order Management**: View, filter, and update order status
+- **Product Management**: Create, edit, activate/deactivate products
+- **Real-time Updates**: Instant reflection of changes
+- **Responsive Design**: Works on all devices
+
+See [ADMIN_SETUP.md](./ADMIN_SETUP.md) for setup instructions and [ADMIN_FEATURES.md](./ADMIN_FEATURES.md) for detailed features.
 
 ### Frontend
 - ✅ **Fully Responsive**: Works on all devices (desktop, tablet, mobile)

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders Management - Zonta Admin</title>
+  <link rel="icon" type="image/png" href="../images/zontalogo_gold.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <a href="dashboard.html" class="admin-logo-link">
+          <img src="../images/zontalogo_gold.png" alt="Zonta Club of Naples" class="admin-logo">
+        </a>
+        <span class="admin-title">Admin Panel</span>
+      </div>
+
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="nav-item">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="orders.html" class="nav-item active">
+          <span class="icon">📦</span>
+          <span>Orders</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">🛍️</span>
+          <span>Products</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+          <span class="icon">🌐</span>
+          <span>View Site</span>
+        </a>
+      </nav>
+
+      <div class="admin-user">
+        <div class="user-info">
+          <span class="user-icon">👤</span>
+          <span class="user-email" id="user-email">Loading...</span>
+        </div>
+        <button class="btn-logout" id="logout-btn">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+        <!-- Main Content -->
+    <main class="admin-main" style="flex-direction: row; overflow: hidden; height: 100vh;">
+
+      <!-- Orders List Panel -->
+      <div id="orders-list-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #e0e0e0;">
+        <header class="admin-header" style="flex-shrink: 0;">
+          <h1>Orders Management</h1>
+          <div class="header-actions">
+            <button class="btn-refresh" id="refresh-btn">🔄 Refresh</button>
+          </div>
+        </header>
+
+        <div class="admin-content" style="flex: 1; overflow-y: auto;">
+          <!-- Filters -->
+          <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <select id="status-filter" class="filter-select">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="preparing">Preparing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="canceled">Canceled</option>
+              <option value="refunded">Refunded</option>
+              <option value="failed">Failed</option>
+            </select>
+
+            <select id="sort-filter" class="filter-select">
+              <option value="created_at-desc">Newest First</option>
+              <option value="created_at-asc">Oldest First</option>
+              <option value="total_amount-desc">Highest Amount</option>
+              <option value="total_amount-asc">Lowest Amount</option>
+            </select>
+          </div>
+
+          <!-- CSV Export Section -->
+          <div class="export-section" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="export-from-date" style="font-weight: 500; color: #555;">From:</label>
+              <input type="date" id="export-from-date" class="filter-select" style="padding: 8px 12px;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label for="export-to-date" style="font-weight: 500; color: #555;">To:</label>
+              <input type="date" id="export-to-date" class="filter-select" style="padding: 8px 12px;">
+            </div>
+            <button id="export-csv-btn" class="btn-secondary" style="display: flex; align-items: center; gap: 6px;">
+              <span>📥</span> Download CSV
+            </button>
+          </div>
+
+          <!-- Loading State -->
+          <div id="loading-state" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading orders...</p>
+          </div>
+
+          <!-- Error State -->
+          <div id="error-state" class="error-state" style="display: none;">
+            <p>Failed to load orders. Please try again.</p>
+          </div>
+
+          <!-- Orders Table -->
+          <div id="orders-content" style="display: none;">
+            <div class="admin-card">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" id="select-all-orders">
+                    </th>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination" id="pagination" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+              <!-- Pagination controls will be added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Details Panel -->
+      <div id="order-details-panel" style="width: 400px; background: white; border-left: 1px solid #e0e0e0; display: none; flex-direction: column; height: 100%; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">
+        <!-- Dynamically populated by JavaScript -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Order Detail Modal (Removed) -->
+  <!-- <div id="order-modal" class="modal" style="display: none;">...</div> -->
+
+  <script src="../js/admin-auth.js"></script>
+  <script src="../js/admin-api.js"></script>
+  <script src="../js/admin-orders.js"></script>
+</body>
+</html>
