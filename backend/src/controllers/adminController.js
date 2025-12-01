@@ -432,6 +432,115 @@ const checkAdminStatus = async (req, res) => {
   }
 };
 
+/**
+ * Get admin overview data for dashboard
+ * Returns KPIs, recent orders, and sales data for chart
+ */
+const getOverview = async (req, res) => {
+  try {
+    // Get all orders
+    const { data: orders, error: ordersError } = await supabase
+      .from('orders')
+      .select('*');
+
+    if (ordersError) {
+      console.error('Error fetching orders for overview:', ordersError);
+      return res.status(500).json({
+        error: 'Failed to fetch overview data',
+        details: ordersError.message
+      });
+    }
+
+    // Calculate date ranges
+    const now = new Date();
+
+    // Start of current week (Sunday)
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    // Start of current month
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    // Filter paid orders (completed transactions)
+    const paidStatuses = ['paid', 'preparing', 'shipped', 'delivered'];
+    const paidOrders = orders.filter(order => paidStatuses.includes(order.status));
+
+    // Calculate KPIs
+    const totalRevenue = paidOrders.reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
+    const totalOrders = orders.length;
+
+    // Week revenue
+    const weekRevenue = paidOrders
+      .filter(order => {
+        const orderDate = new Date(order.paid_at || order.created_at);
+        return orderDate >= startOfWeek;
+      })
+      .reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
+
+    // Month revenue
+    const monthRevenue = paidOrders
+      .filter(order => {
+        const orderDate = new Date(order.paid_at || order.created_at);
+        return orderDate >= startOfMonth;
+      })
+      .reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
+
+    // Recent orders (last 10)
+    const recentOrders = orders
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 10)
+      .map(order => ({
+        id: order.id,
+        customer: order.customer_name || order.customer_email || 'N/A',
+        email: order.customer_email,
+        status: order.status,
+        total: parseFloat(order.total_amount || 0),
+        date: order.created_at
+      }));
+
+    // Sales last 7 days
+    const salesLast7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+
+      const nextDate = new Date(date);
+      nextDate.setDate(date.getDate() + 1);
+
+      const dayRevenue = paidOrders
+        .filter(order => {
+          const orderDate = new Date(order.paid_at || order.created_at);
+          return orderDate >= date && orderDate < nextDate;
+        })
+        .reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
+
+      salesLast7Days.push({
+        date: date.toISOString().split('T')[0],
+        revenue: dayRevenue
+      });
+    }
+
+    res.json({
+      success: true,
+      totalRevenue,
+      totalOrders,
+      weekRevenue,
+      monthRevenue,
+      recentOrders,
+      salesLast7Days
+    });
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: err.message
+    });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getOrderById,
@@ -442,4 +551,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   checkAdminStatus,
+  getOverview,
 };

@@ -112,10 +112,17 @@ const productsAPI = {
  */
 const statsAPI = {
   /**
-   * Get dashboard statistics
+   * Get dashboard statistics (legacy)
    */
   async getDashboard() {
     return makeAuthRequest('/admin/stats');
+  },
+
+  /**
+   * Get dashboard overview data (KPIs, recent orders, chart data)
+   */
+  async getOverview() {
+    return makeAuthRequest('/admin/overview');
   },
 };
 

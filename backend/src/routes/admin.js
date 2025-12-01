@@ -11,10 +11,14 @@ const {
   updateProduct,
   deleteProduct,
   checkAdminStatus,
+  getOverview,
 } = require('../controllers/adminController');
 
 // Admin status check (requires auth only)
 router.get('/check', requireAuth, requireAdmin, checkAdminStatus);
+
+// Dashboard overview route
+router.get('/overview', requireAuth, requireAdmin, getOverview);
 
 // Order management routes
 router.get('/orders', requireAuth, requireAdmin, getAllOrders);
