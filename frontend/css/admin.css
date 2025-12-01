@@ -106,8 +106,33 @@
 }
 
 .admin-brand {
-  padding: 30px 20px;
+  padding: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.admin-logo-link {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.admin-logo {
+  width: 80px;
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+.admin-logo:hover {
+  transform: scale(1.05);
+}
+
+.admin-title {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
 }
 
 .admin-brand h2 {
