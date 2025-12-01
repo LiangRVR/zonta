@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const supabase = require('./supabaseClient');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,46 @@ const productsRoutes = require('./routes/products');
 const stripeRoutes = require('./routes/stripe');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+
+/**
+ * Ensure required storage buckets exist
+ */
+async function ensureStorageBuckets() {
+  const bucketName = 'products-images';
+
+  try {
+    // Check if bucket exists
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+
+    if (listError) {
+      console.error('Error listing buckets:', listError.message);
+      return;
+    }
+
+    const bucketExists = buckets.some(b => b.name === bucketName);
+
+    console.log(`Checking for storage bucket: ${bucketName}`);
+
+    if (!bucketExists) {
+      console.log(`Creating storage bucket: ${bucketName}`);
+      const { error: createError } = await supabase.storage.createBucket(bucketName, {
+        public: true,
+        fileSizeLimit: 10485760, // 10MB
+        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+      });
+
+      if (createError) {
+        console.error('Error creating bucket:', createError.message);
+      } else {
+        console.log(`Storage bucket '${bucketName}' created successfully`);
+      }
+    } else {
+      console.log(`Storage bucket '${bucketName}' already exists`);
+    }
+  } catch (err) {
+    console.error('Error ensuring storage buckets:', err.message);
+  }
+}
 
 // Middleware
 app.use(cors());
@@ -84,8 +125,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`API Documentation: http://localhost:${PORT}/`);
+
+  // Ensure storage buckets exist
+  await ensureStorageBuckets();
 });

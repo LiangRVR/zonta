@@ -15,11 +15,18 @@ async function makeAuthRequest(endpoint, options = {}) {
 
   const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
 
+  // Don't set Content-Type for FormData - browser will set it with boundary
+  const isFormData = options.body instanceof FormData;
+
   const headers = {
-    'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
     ...options.headers,
   };
+
+  // Only set Content-Type for non-FormData requests
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
@@ -77,7 +84,7 @@ const productsAPI = {
   },
 
   /**
-   * Create new product
+   * Create new product (JSON)
    */
   async create(productData) {
     return makeAuthRequest('/admin/products', {
@@ -87,12 +94,32 @@ const productsAPI = {
   },
 
   /**
-   * Update existing product
+   * Create new product with FormData (for file uploads)
+   */
+  async createWithFormData(formData) {
+    return makeAuthRequest('/admin/products', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  /**
+   * Update existing product (JSON)
    */
   async update(productId, productData) {
     return makeAuthRequest(`/admin/products/${productId}`, {
       method: 'PUT',
       body: JSON.stringify(productData),
+    });
+  },
+
+  /**
+   * Update existing product with FormData (for file uploads)
+   */
+  async updateWithFormData(productId, formData) {
+    return makeAuthRequest(`/admin/products/${productId}`, {
+      method: 'PUT',
+      body: formData,
     });
   },
 

@@ -1,4 +1,73 @@
 const supabase = require('../supabaseClient');
+const { v4: uuidv4 } = require('uuid');
+
+/**
+ * Helper: Extract storage path from public URL
+ */
+function extractStoragePath(publicUrl, bucket = 'products-images') {
+  if (!publicUrl) return null;
+
+  // URL format: https://<project>.supabase.co/storage/v1/object/public/products-images/path/to/file.ext
+  const marker = `/storage/v1/object/public/${bucket}/`;
+  const idx = publicUrl.indexOf(marker);
+  if (idx === -1) return null;
+
+  return publicUrl.substring(idx + marker.length);
+}
+
+/**
+ * Helper: Upload image to Supabase Storage
+ */
+async function uploadProductImage(file) {
+  if (!file) return null;
+
+  const ext = file.originalname.split('.').pop().toLowerCase();
+  const allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+  if (!allowedExts.includes(ext)) {
+    throw new Error('Invalid file type. Allowed: jpg, jpeg, png, gif, webp');
+  }
+
+  const fileName = `products/${uuidv4()}.${ext}`;
+
+  const { data, error } = await supabase.storage
+    .from('products-images')
+    .upload(fileName, file.buffer, {
+      contentType: file.mimetype,
+      upsert: false
+    });
+
+  if (error) {
+    console.error('Error uploading image:', error);
+    throw new Error('Failed to upload image: ' + error.message);
+  }
+
+  // Get public URL
+  const { data: urlData } = supabase.storage
+    .from('products-images')
+    .getPublicUrl(fileName);
+
+  return urlData.publicUrl;
+}
+
+/**
+ * Helper: Delete image from Supabase Storage
+ */
+async function deleteProductImage(imageUrl) {
+  if (!imageUrl) return;
+
+  const storagePath = extractStoragePath(imageUrl);
+  if (!storagePath) return;
+
+  const { error } = await supabase.storage
+    .from('products-images')
+    .remove([storagePath]);
+
+  if (error) {
+    console.error('Error deleting image from storage:', error);
+    // Don't throw - image deletion failure shouldn't block product operations
+  }
+}
 
 /**
  * Get all orders with optional filtering
@@ -241,26 +310,33 @@ const getAllProductsAdmin = async (req, res) => {
 };
 
 /**
- * Create new product
+ * Create new product (with optional image upload)
  */
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, image, image_url, stock, display_order, active } = req.body;
+    const { name, description, price, display_order, active } = req.body;
 
     if (!name || !price) {
       return res.status(400).json({ error: 'Name and price are required' });
+    }
+
+    // Handle image upload if file is provided
+    let imageUrl = null;
+    if (req.file) {
+      try {
+        imageUrl = await uploadProductImage(req.file);
+      } catch (uploadError) {
+        return res.status(400).json({ error: uploadError.message });
+      }
     }
 
     const productData = {
       name,
       description: description || null,
       price: parseFloat(price),
-      category: category || null,
-      image: image || null,
-      image_url: image_url || null,
-      stock: stock !== undefined ? parseInt(stock) : 0,
+      image: imageUrl,
       display_order: display_order !== undefined ? parseInt(display_order) : 0,
-      active: active !== undefined ? active : true
+      active: active === 'true' || active === true
     };
 
     const { data, error } = await supabase
@@ -270,6 +346,10 @@ const createProduct = async (req, res) => {
       .single();
 
     if (error) {
+      // If DB insert fails, clean up uploaded image
+      if (imageUrl) {
+        await deleteProductImage(imageUrl);
+      }
       console.error('Error creating product:', error);
       return res.status(500).json({
         error: 'Failed to create product',
@@ -292,23 +372,48 @@ const createProduct = async (req, res) => {
 };
 
 /**
- * Update product
+ * Update product (with optional new image upload)
  */
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, category, image, image_url, stock, display_order, active } = req.body;
+    const { name, description, price, display_order, active } = req.body;
+
+    // Fetch existing product to get current image URL
+    const { data: existingProduct, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      console.error('Error fetching product:', fetchError);
+      return res.status(500).json({
+        error: 'Failed to fetch product',
+        details: fetchError.message
+      });
+    }
 
     const updateData = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = parseFloat(price);
-    if (category !== undefined) updateData.category = category;
-    if (image !== undefined) updateData.image = image;
-    if (image_url !== undefined) updateData.image_url = image_url;
-    if (stock !== undefined) updateData.stock = parseInt(stock);
     if (display_order !== undefined) updateData.display_order = parseInt(display_order);
-    if (active !== undefined) updateData.active = active;
+    if (active !== undefined) updateData.active = active === 'true' || active === true;
+
+    // Handle image upload if new file is provided
+    let oldImageUrl = existingProduct.image;
+    if (req.file) {
+      try {
+        const newImageUrl = await uploadProductImage(req.file);
+        updateData.image = newImageUrl;
+      } catch (uploadError) {
+        return res.status(400).json({ error: uploadError.message });
+      }
+    }
 
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
@@ -322,14 +427,20 @@ const updateProduct = async (req, res) => {
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return res.status(404).json({ error: 'Product not found' });
+      // If DB update fails and we uploaded a new image, clean it up
+      if (updateData.image && updateData.image !== oldImageUrl) {
+        await deleteProductImage(updateData.image);
       }
       console.error('Error updating product:', error);
       return res.status(500).json({
         error: 'Failed to update product',
         details: error.message
       });
+    }
+
+    // If update succeeded and we uploaded a new image, delete the old one
+    if (updateData.image && oldImageUrl && updateData.image !== oldImageUrl) {
+      await deleteProductImage(oldImageUrl);
     }
 
     res.json({
@@ -347,12 +458,30 @@ const updateProduct = async (req, res) => {
 };
 
 /**
- * Delete product (or mark as inactive)
+ * Delete product (and its image from Storage)
  */
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { permanent } = req.query;
+
+    // Fetch product to get image URL before deleting
+    const { data: product, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      console.error('Error fetching product:', fetchError);
+      return res.status(500).json({
+        error: 'Failed to fetch product',
+        details: fetchError.message
+      });
+    }
 
     if (permanent === 'true') {
       // Permanently delete
@@ -369,12 +498,17 @@ const deleteProduct = async (req, res) => {
         });
       }
 
+      // Delete image from Storage
+      if (product.image) {
+        await deleteProductImage(product.image);
+      }
+
       res.json({
         success: true,
         message: 'Product deleted permanently'
       });
     } else {
-      // Mark as inactive (soft delete)
+      // Mark as inactive (soft delete) - keep the image
       const { data, error } = await supabase
         .from('products')
         .update({ active: false })
@@ -383,9 +517,6 @@ const deleteProduct = async (req, res) => {
         .single();
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          return res.status(404).json({ error: 'Product not found' });
-        }
         console.error('Error deactivating product:', error);
         return res.status(500).json({
           error: 'Failed to deactivate product',
