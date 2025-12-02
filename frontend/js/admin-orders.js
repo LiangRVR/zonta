@@ -357,11 +357,59 @@ function initSelectAll() {
  */
 function initExportCSV() {
   const exportBtn = document.getElementById('export-csv-btn');
+  const modal = document.getElementById('csv-export-modal');
+  const closeModalBtn = document.getElementById('close-csv-modal');
+  const cancelBtn = document.getElementById('cancel-csv-btn');
+  const downloadBtn = document.getElementById('download-csv-btn');
   const fromDateInput = document.getElementById('export-from-date');
   const toDateInput = document.getElementById('export-to-date');
 
-  if (exportBtn) {
-    exportBtn.addEventListener('click', async () => {
+  console.log('initExportCSV - Elements found:', {
+    exportBtn: !!exportBtn,
+    modal: !!modal,
+    closeModalBtn: !!closeModalBtn,
+    cancelBtn: !!cancelBtn,
+    downloadBtn: !!downloadBtn
+  });
+
+  // Open modal when export button is clicked
+  if (exportBtn && modal) {
+    exportBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('Export button clicked, opening modal');
+      console.log('Modal current display:', modal.style.display);
+      modal.style.display = 'flex';
+      modal.style.visibility = 'visible';
+      modal.style.opacity = '1';
+      console.log('Modal new display:', modal.style.display);
+      console.log('Modal computed style:', window.getComputedStyle(modal).display);
+    });
+  } else {
+    console.error('Export button or modal not found!');
+  }
+
+  // Close modal handlers
+  const closeModal = () => {
+    if (modal) {
+      modal.style.display = 'none';
+      if (fromDateInput) fromDateInput.value = '';
+      if (toDateInput) toDateInput.value = '';
+    }
+  };
+
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+  // Close on background click
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+
+  // Download CSV handler
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', async () => {
       const fromDate = fromDateInput ? fromDateInput.value : '';
       const toDate = toDateInput ? toDateInput.value : '';
 
@@ -392,8 +440,8 @@ function initExportCSV() {
         }
 
         // Show loading state
-        exportBtn.disabled = true;
-        exportBtn.innerHTML = '<span>⏳</span> Downloading...';
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '<span>⏳</span> Downloading...';
 
         // Fetch the CSV with auth header
         const response = await fetch(exportUrl, {
@@ -418,14 +466,15 @@ function initExportCSV() {
         a.remove();
 
         window.adminAPI.ui.showToast('Orders exported successfully');
+        closeModal();
 
       } catch (error) {
         console.error('Error exporting orders:', error);
         window.adminAPI.ui.showToast('Failed to export orders: ' + error.message, 'error');
       } finally {
         // Reset button state
-        exportBtn.disabled = false;
-        exportBtn.innerHTML = '<span>📥</span> Download CSV';
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = '<span>📥</span> Download CSV';
       }
     });
   }

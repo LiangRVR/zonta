@@ -116,13 +116,14 @@
   margin-bottom: 10px;
 }
 
-.admin-logo {
-  width: 80px;
-  height: auto;
-  transition: transform 0.2s ease;
+.admin-sidebar .admin-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-.admin-logo:hover {
+.admin-sidebar .admin-logo:hover {
   transform: scale(1.05);
 }
 
@@ -675,7 +676,7 @@ button:disabled {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 9999;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -689,6 +690,8 @@ button:disabled {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10000;
 }
 
 .modal-header {
@@ -721,13 +724,38 @@ button:disabled {
   transition: all 0.3s;
 }
 
-.modal-close:hover {
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.modal-close:hover,
+.close-modal:hover {
   background: #f0f0f0;
   color: #333;
 }
 
 .modal-body {
   padding: 30px;
+}
+
+.modal-footer {
+  padding: 20px 30px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 /* ==================== Forms ==================== */

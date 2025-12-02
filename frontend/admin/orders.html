@@ -81,18 +81,7 @@
               <option value="total_amount-desc">Highest Amount</option>
               <option value="total_amount-asc">Lowest Amount</option>
             </select>
-          </div>
 
-          <!-- CSV Export Section -->
-          <div class="export-section" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <label for="export-from-date" style="font-weight: 500; color: #555;">From:</label>
-              <input type="date" id="export-from-date" class="filter-select" style="padding: 8px 12px;">
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <label for="export-to-date" style="font-weight: 500; color: #555;">To:</label>
-              <input type="date" id="export-to-date" class="filter-select" style="padding: 8px 12px;">
-            </div>
             <button id="export-csv-btn" class="btn-secondary" style="display: flex; align-items: center; gap: 6px;">
               <span>📥</span> Download CSV
             </button>
@@ -145,6 +134,36 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- CSV Export Modal -->
+  <div id="csv-export-modal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>Export Orders to CSV</h2>
+        <button class="close-modal" id="close-csv-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px; color: #666;">Select a date range to export orders. Leave empty to export all orders.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div>
+            <label for="export-from-date" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">From Date:</label>
+            <input type="date" id="export-from-date" class="filter-select" style="width: 100%; padding: 10px 12px;">
+          </div>
+          <div>
+            <label for="export-to-date" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">To Date:</label>
+            <input type="date" id="export-to-date" class="filter-select" style="width: 100%; padding: 10px 12px;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-csv-btn" class="btn-secondary">Cancel</button>
+        <button id="download-csv-btn" class="btn-primary" style="display: flex; align-items: center; gap: 6px;">
+          <span>📥</span> Download CSV
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Order Detail Modal (Removed) -->
